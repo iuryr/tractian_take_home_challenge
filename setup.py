@@ -83,10 +83,10 @@ def create_customer_system_sample_workorders() -> list[CustomerSystemWorkorder]:
     """Generate n sample workorder documents."""
     base = datetime.now(timezone.utc) - timedelta(days=30)
     samples: list[CustomerSystemWorkorder] = []
-    _status = choice(
-        ["pending", "in_progress", "completed", "on_hold", "cancelled", "deleted"]
-    )
     for i in range(1, NUMBER_OF_WORKORDERS_SAMPLES_ON_CUSTOMER_SYSTEM + 1):
+        _status = choice(
+            ["pending", "in_progress", "completed", "on_hold", "cancelled", "deleted"]
+        )
         sample = {
             "orderNo": i,
             "isCanceled": _status == "cancelled",
