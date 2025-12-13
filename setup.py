@@ -89,6 +89,7 @@ def create_customer_system_sample_workorders() -> list[CustomerSystemWorkorder]:
         )
         sample = {
             "orderNo": i,
+            "isActive": _status == "in_progress",
             "isCanceled": _status == "cancelled",
             "isDeleted": _status == "deleted",
             "isDone": _status == "completed",
