@@ -5,8 +5,9 @@ from client_erp_adapter import ClientERP
 
 async def main():
     client = ClientERP()
-    client.read_api_response(Path("./data/inbound/1.json"))
-    print("Hello, World!")
+    json_files = client.capture_api_responses()
+    for file in json_files:
+        print(client.read_api_response(file))
 
 
 if __name__ == "__main__":
