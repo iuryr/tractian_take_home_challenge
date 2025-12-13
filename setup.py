@@ -72,8 +72,8 @@ def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
                 ),
                 "title": f"Example workorder #{i}",
                 "description": f"Example workorder #{i} description",
-                "createdAt": (base + timedelta(days=i)),
-                "updatedAt": (base + timedelta(days=i, hours=1)),
+                "createdAt": (base + timedelta(days=i)).isoformat(),
+                "updatedAt": (base + timedelta(days=i, hours=1)).isoformat(),
                 "deleted": False,
                 "isSynced": False
             }
