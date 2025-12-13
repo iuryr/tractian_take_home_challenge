@@ -1,7 +1,10 @@
 import os
 import json
+from jsonschema import validate, ValidationError
 from pathlib import Path
 from loguru import logger
+from typing import Any
+from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
 
 DATA_INBOUND_DIR = Path(os.getenv("DATA_INBOUND_DIR", "data/inbound"))
 
@@ -37,3 +40,12 @@ class ClientERP:
         except json.JSONDecodeError:
             logger.warning(f"{path} is a malformed JSON")
             return None
+
+    def validate_schema(self, json_object: dict[str, Any], pathname: Path) -> bool:
+        try:
+            validate(instance=json_object, schema=CLIENT_WORKORDER_SCHEMA)
+            return True
+        except ValidationError:
+            logger.warning(f"{pathname} is non compliant with client ERP schema")
+            return False
+
