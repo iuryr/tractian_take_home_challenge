@@ -63,15 +63,16 @@ def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
     base = datetime.now(timezone.utc) - timedelta(days=30)
     samples: list[TracOSWorkorder] = []
     for i in range(1, NUMBER_OF_WORKORDERS_SAMPLES_ON_TRACOS + 1):
+        orderNumber = i + NUMBER_OF_WORKORDERS_SAMPLES_ON_CUSTOMER_SYSTEM
         samples.append(
             {
                 "_id": ObjectId(),
-                "number": i,
+                "number": orderNumber,
                 "status": choice(
                     ["pending", "in_progress", "completed", "on_hold", "cancelled"]
                 ),
-                "title": f"Example workorder #{i}",
-                "description": f"Example workorder #{i} description",
+                "title": f"Example workorder #{orderNumber}",
+                "description": f"Example workorder #{orderNumber} description",
                 "createdAt": (base + timedelta(days=i)).isoformat(),
                 "updatedAt": (base + timedelta(days=i, hours=1)).isoformat(),
                 "deleted": False,
