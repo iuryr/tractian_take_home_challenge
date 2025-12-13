@@ -7,3 +7,5 @@ clean:
 	docker compose down --volumes
 	rm -rf ./data/inbound/*.json
 	rm -rf ./data/outbound/*.json
+
+re: clean all
