@@ -10,7 +10,7 @@ def test_read_api_response_no_permission(monkeypatch):
         raise PermissionError("Permission denied")
 
     monkeypatch.setattr(Path, "open", fake_open)
-    result = client_erp.read_api_response(Path("nopermission.json"))
+    result = client_erp.read_json_file(Path("nopermission.json"))
     assert result is None
 
 def test_read_api_response_malformed_json(monkeypatch):
@@ -23,5 +23,5 @@ def test_read_api_response_malformed_json(monkeypatch):
     monkeypatch.setattr("json.load", lambda *a, **k: (_ for _ in ()).throw(
         JSONDecodeError("Malformed JSON", doc="", pos=0)))
 
-    result = client_erp.read_api_response(Path("malformed.json"))
+    result = client_erp.read_json_file(Path("malformed.json"))
     assert result is None

@@ -10,7 +10,7 @@ class ClientERP:
         pass
     
     #add tests
-    def capture_api_responses(self) -> list[Path]:
+    def capture_json_filenames(self) -> list[Path]:
         #data_inbound_dir absolute, relative, not a dir
         if DATA_INBOUND_DIR.is_dir() is False:
             logger.warning("DATA_INBOUND_DIR environment variable does not resolve to a directory.")
@@ -24,7 +24,7 @@ class ClientERP:
             return []
     
     #TODO what if the file has more than one JSON
-    def read_api_response(self, path: Path):
+    def read_json_file(self, path: Path):
         """Read JSON file and return dict object if sucessfull"""
         
         try:
