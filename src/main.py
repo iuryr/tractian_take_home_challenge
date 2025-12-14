@@ -3,6 +3,7 @@ from pathlib import Path
 import asyncio
 from typing import Any
 from client_erp_adapter import ClientERP
+from models.customer_system_models import CustomerSystemWorkorder
 
 async def main():
     client = ClientERP()
@@ -15,8 +16,14 @@ async def main():
         if client.validate_schema(candidate, file) is True:
             compliant_payloads.append(candidate)
 
+    domain_objects = []
     for obj in compliant_payloads:
-        print(obj)
+        workorder = CustomerSystemWorkorder.model_validate(obj)
+        print(workorder)
+        domain_objects.append(workorder)
+        # print(obj)
+    print(domain_objects)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -12,7 +12,7 @@ class ClientERP:
     def __init__(self):
         pass
     
-    #add tests
+    #TODO add tests
     def capture_json_filenames(self) -> list[Path]:
         #data_inbound_dir absolute, relative, not a dir
         if DATA_INBOUND_DIR.is_dir() is False:
