@@ -15,6 +15,14 @@ CLIENT_WORKORDER_SCHEMA = {
             "lastUpdateDate": {"type" : "string", "format" : "date-time"},
             "deletedDate": {"type" : ["string", "null"], "format" : "date-time"}
             },
+        "oneOf": [
+            {"properties": {"isActive": {"const" : True}}},
+            {"properties": {"isCanceled": {"const" : True}}},
+            {"properties": {"isDeleted": {"const" : True}}},
+            {"properties": {"isDone": {"const" : True}}},
+            {"properties": {"isOnHold": {"const" : True}}},
+            {"properties": {"isPending": {"const" : True}}}
+              ],
         "required" : ["orderNo", "isActive", "isCanceled", "isDeleted", "isDone", "isOnHold", "isPending", "isSynced", "summary", "creationDate", "lastUpdateDate", "deletedDate"],
         "additionalProperties" : False
         }

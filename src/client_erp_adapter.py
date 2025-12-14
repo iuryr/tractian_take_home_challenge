@@ -45,7 +45,9 @@ class ClientERP:
         try:
             validate(instance=json_object, schema=CLIENT_WORKORDER_SCHEMA)
             return True
-        except ValidationError:
+        except ValidationError as e:
             logger.warning(f"{pathname} is non compliant with client ERP schema")
+            logger.warning(f"Error: {e.message}")
+            logger.warning(f"Error: {e.relative_schema_path}")
             return False
 
