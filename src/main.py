@@ -4,6 +4,8 @@ import asyncio
 from typing import Any
 from client_erp_adapter import ClientERP
 from models.customer_system_models import CustomerSystemWorkorder
+from models.tracOS_models import TracOSWorkorder
+from translator import client_to_tracos
 
 async def main():
     client = ClientERP()
@@ -16,13 +18,18 @@ async def main():
         if client.validate_schema(candidate, file) is True:
             compliant_payloads.append(candidate)
 
-    domain_objects = []
+    domain_objects : list[CustomerSystemWorkorder] = []
     for obj in compliant_payloads:
         workorder = CustomerSystemWorkorder.model_validate(obj)
         print(workorder)
         domain_objects.append(workorder)
         # print(obj)
-    print(domain_objects)
+    # print(domain_objects)
+    for obj in domain_objects:
+        translated = client_to_tracos(obj)
+        print("TracOS Object:")
+        print(translated)
+
 
 
 if __name__ == "__main__":
