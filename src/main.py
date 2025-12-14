@@ -14,29 +14,43 @@ async def main():
     tracos = TracOSAdapter()
     client = ClientERP()
 
+    #capture filenames
     json_files = client.capture_json_filenames()
+    #read json files
     compliant_payloads: list[dict[str, Any]] = []
     for file in json_files:
         candidate = client.read_json_file(file)
         if candidate is None:
             continue
+        #append valid json to list
         if client.validate_schema(candidate, file) is True:
             compliant_payloads.append(candidate)
 
+    #transform json into domain object and store
     domain_objects : list[CustomerSystemWorkorder] = []
     for obj in compliant_payloads:
         workorder = CustomerSystemWorkorder.model_validate(obj)
-        print(workorder)
+        # print(workorder)
         domain_objects.append(workorder)
         # print(obj)
     # print(domain_objects)
+    #for each domain object, check if it needs to be inserted or updated
     for obj in domain_objects:
-        translated = client_to_tracos(obj)
-        print("TracOS Object:")
-        print(translated)
-    workorder = await tracos.capture_workorder(14)
-    print(type(workorder))
-    print(workorder)
+        client_workorder_translated = client_to_tracos(obj)
+        tracos_workorder = await tracos.capture_workorder(client_workorder_translated.number)
+        if tracos_workorder is None:
+            await tracos.insert_workorder(client_workorder_translated)
+            continue
+        elif tracos_workorder.updatedAt < client_workorder_translated.updatedAt:
+            continue
+         #update
+        else:
+            # do nothing
+         continue
+
+        # print("TracOS Object:")
+        # print(translated)
+    # workorder = await tracos.capture_workorder(14)
 
 
 
