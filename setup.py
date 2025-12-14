@@ -2,6 +2,7 @@
 import asyncio
 import json
 import os
+from random import randint
 from datetime import datetime, timedelta, timezone
 from bson import ObjectId
 from typing import Literal, TypedDict
@@ -23,7 +24,7 @@ if not os.path.exists(DATA_INBOUND_DIR):
 
 # Constants
 NUMBER_OF_WORKORDERS_SAMPLES_ON_TRACOS: int = 10
-NUMBER_OF_WORKORDERS_SAMPLES_ON_CUSTOMER_SYSTEM: int = 10
+NUMBER_OF_WORKORDERS_SAMPLES_ON_CUSTOMER_SYSTEM: int = 15
 
 
 async def get_mongo_client() -> AsyncIOMotorClient:
@@ -58,23 +59,23 @@ class CustomerSystemWorkorder(TypedDict):
     lastUpdateDate: datetime
     deletedDate: datetime | None = None
 
+#Global base time for sample creation
+base = datetime.now(timezone.utc) - timedelta(days=30)
 
 def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
     """Generate n sample workorder documents."""
-    base = datetime.now(timezone.utc) - timedelta(days=30)
     samples: list[TracOSWorkorder] = []
     for i in range(1, NUMBER_OF_WORKORDERS_SAMPLES_ON_TRACOS + 1):
-        orderNumber = i + NUMBER_OF_WORKORDERS_SAMPLES_ON_CUSTOMER_SYSTEM
         samples.append(
             {
                 "_id": ObjectId(),
-                "number": orderNumber,
+                "number": i,
                 "status": choice(
                     ["pending", "in_progress", "completed", "on_hold", "cancelled"]),
-                "title": f"Example workorder #{orderNumber}",
-                "description": f"Example workorder #{orderNumber} description",
+                "title": f"Example workorder #{i}",
+                "description": f"Example workorder #{i} description",
                 "createdAt": (base + timedelta(days=i)).isoformat(),
-                "updatedAt": (base + timedelta(days=i, hours=1)).isoformat(),
+                "updatedAt": (base + timedelta(days=i, hours=randint(0,10))).isoformat(),
                 "deleted": False,
                 "isSynced": False,
                 "syncedAt": None
@@ -85,7 +86,6 @@ def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
 
 def create_customer_system_sample_workorders() -> list[CustomerSystemWorkorder]:
     """Generate n sample workorder documents."""
-    base = datetime.now(timezone.utc) - timedelta(days=30)
     samples: list[CustomerSystemWorkorder] = []
     for i in range(1, NUMBER_OF_WORKORDERS_SAMPLES_ON_CUSTOMER_SYSTEM + 1):
         _status = choice(
@@ -102,7 +102,7 @@ def create_customer_system_sample_workorders() -> list[CustomerSystemWorkorder]:
             "isSynced" : False,
             "summary": f"Example workorder #{i}",
             "creationDate": (base + timedelta(days=i)).isoformat(),
-            "lastUpdateDate": (base + timedelta(days=i, hours=1)).isoformat(),
+            "lastUpdateDate": (base + timedelta(days=i, hours=randint(0,10))).isoformat(),
             "deletedDate": None,
         }
         if sample["isDeleted"]:
