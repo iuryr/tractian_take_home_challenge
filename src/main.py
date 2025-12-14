@@ -34,8 +34,9 @@ async def main():
         translated = client_to_tracos(obj)
         print("TracOS Object:")
         print(translated)
-
-    print(await tracos.collection.find_one({"number": 14}))
+    workorder = await tracos.capture_workorder(14)
+    print(type(workorder))
+    print(workorder)
 
 
 
