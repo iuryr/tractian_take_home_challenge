@@ -69,8 +69,7 @@ def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
                 "_id": ObjectId(),
                 "number": orderNumber,
                 "status": choice(
-                    ["pending", "in_progress", "completed", "on_hold", "cancelled"]
-                ),
+                    ["pending", "in_progress", "completed", "on_hold", "cancelled"]),
                 "title": f"Example workorder #{orderNumber}",
                 "description": f"Example workorder #{orderNumber} description",
                 "createdAt": (base + timedelta(days=i)).isoformat(),

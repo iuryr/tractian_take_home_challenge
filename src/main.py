@@ -2,13 +2,18 @@
 from pathlib import Path
 import asyncio
 from typing import Any
+
 from client_erp_adapter import ClientERP
-from models.customer_system_models import CustomerSystemWorkorder
-from models.tracOS_models import TracOSWorkorder
+from tracos_adapter import TracOSAdapter
 from translator import client_to_tracos
 
+from models.customer_system_models import CustomerSystemWorkorder
+from models.tracOS_models import TracOSWorkorder
+
 async def main():
+    tracos = TracOSAdapter()
     client = ClientERP()
+
     json_files = client.capture_json_filenames()
     compliant_payloads: list[dict[str, Any]] = []
     for file in json_files:
@@ -29,6 +34,8 @@ async def main():
         translated = client_to_tracos(obj)
         print("TracOS Object:")
         print(translated)
+
+    print(await tracos.collection.find_one({"number": 14}))
 
 
 

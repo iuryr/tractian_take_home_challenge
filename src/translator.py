@@ -5,7 +5,7 @@ def customer_bool_to_tracos_status(customer_obj: CustomerSystemWorkorder) -> Tra
     """Map customer object boolean to tracOS object literal"""
     if customer_obj.isActive:
         return "in_progress"
-    if customer_obj.isCanceled:
+    if customer_obj.isCanceled or customer_obj.isDeleted:
         return "cancelled"
     if customer_obj.isPending:
         return "pending"
