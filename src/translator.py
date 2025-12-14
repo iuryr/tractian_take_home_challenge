@@ -26,5 +26,6 @@ def client_to_tracos(left: CustomerSystemWorkorder) -> TracOSWorkorder:
                 updatedAt = left.lastUpdateDate,
                 deleted = left.isDeleted,
                 deletedAt = left.deletedDate,
-                isSynced = left.isSynced #are we sure?
+                isSynced = left.isSynced, #are we sure?
+                syncedAt = None
                 )

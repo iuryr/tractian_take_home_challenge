@@ -17,6 +17,7 @@ class TracOSWorkorder(BaseModel):
     deleted: bool
     deletedAt: datetime | None = None
     isSynced: bool
+    syncedAt: datetime | None = None
 
     model_config = ConfigDict(
         extra="forbid",             # additionalProperties: false

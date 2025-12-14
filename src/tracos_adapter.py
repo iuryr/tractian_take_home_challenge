@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timezone
 from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Any
 from loguru import logger
@@ -36,7 +37,12 @@ class TracOSAdapter:
         return workorder
 
     async def insert_workorder(self, order: TracOSWorkorder) -> None:
-        document = order.model_dump(by_alias=True, exclude_none=True)
+        synced_order = order.model_copy(update={
+            "isSynced" : True,
+            "syncedAt" : datetime.now(timezone.utc)
+            })
+
+        document = synced_order.model_dump(by_alias=True, exclude_none=True)
         try:
             result = await self.collection.insert_one(document)
             logger.info(f"Added new document to MongoDB instance: _id: {result.inserted_id}")

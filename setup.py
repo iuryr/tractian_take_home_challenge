@@ -41,6 +41,7 @@ class TracOSWorkorder(TypedDict):
     deleted: bool
     deletedAt: datetime | None = None
     isSynced: bool
+    syncedAt: datetime | None = None
 
 
 class CustomerSystemWorkorder(TypedDict):
@@ -75,7 +76,8 @@ def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
                 "createdAt": (base + timedelta(days=i)).isoformat(),
                 "updatedAt": (base + timedelta(days=i, hours=1)).isoformat(),
                 "deleted": False,
-                "isSynced": False
+                "isSynced": False,
+                "syncedAt": None
             }
         )
     return samples
