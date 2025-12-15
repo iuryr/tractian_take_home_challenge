@@ -31,8 +31,8 @@ class TracOSWorkorder(BaseModel):
         return value
 
     model_config = ConfigDict(
-        extra="forbid",             # additionalProperties: false
-        validate_assignment=True,   # re-validate on attribute change
+        extra="forbid",  # additionalProperties: false
+        validate_assignment=True,  # re-validate on attribute change
         populate_by_name=True,
-        arbitrary_types_allowed=True
+        arbitrary_types_allowed=True,
     )

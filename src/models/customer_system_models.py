@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from pydantic import BaseModel, ConfigDict, model_validator, field_validator
 
+
 class CustomerSystemWorkorder(BaseModel):
     orderNo: int
     isActive: bool
@@ -23,7 +24,7 @@ class CustomerSystemWorkorder(BaseModel):
         mode="after",
     )
     @classmethod
-    def ensure_utc(cls, value : datetime | None):
+    def ensure_utc(cls, value: datetime | None):
         if value is None:
             return value
 
@@ -55,6 +56,6 @@ class CustomerSystemWorkorder(BaseModel):
         return self
 
     model_config = ConfigDict(
-        extra="forbid",             # additionalProperties: false
-        validate_assignment=True,   # re-validate on attribute change
+        extra="forbid",  # additionalProperties: false
+        validate_assignment=True,  # re-validate on attribute change
     )

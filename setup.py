@@ -59,8 +59,10 @@ class CustomerSystemWorkorder(TypedDict):
     lastUpdateDate: datetime
     deletedDate: datetime | None = None
 
-#Global base time for sample creation
+
+# Global base time for sample creation
 base = datetime.now(timezone.utc) - timedelta(days=30)
+
 
 def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
     """Generate n sample workorder documents."""
@@ -71,14 +73,17 @@ def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
                 "_id": ObjectId(),
                 "number": i,
                 "status": choice(
-                    ["pending", "in_progress", "completed", "on_hold", "cancelled"]),
+                    ["pending", "in_progress", "completed", "on_hold", "cancelled"]
+                ),
                 "title": f"Example workorder #{i}",
                 "description": f"Example workorder #{i} description",
                 "createdAt": (base + timedelta(days=i)).isoformat(),
-                "updatedAt": (base + timedelta(days=i, hours=randint(0,10))).isoformat(),
+                "updatedAt": (
+                    base + timedelta(days=i, hours=randint(0, 10))
+                ).isoformat(),
                 "deleted": False,
                 "isSynced": False,
-                "syncedAt": None
+                "syncedAt": None,
             }
         )
     return samples
@@ -99,10 +104,12 @@ def create_customer_system_sample_workorders() -> list[CustomerSystemWorkorder]:
             "isDone": _status == "completed",
             "isOnHold": _status == "on_hold",
             "isPending": _status == "pending",
-            "isSynced" : False,
+            "isSynced": False,
             "summary": f"Example workorder #{i}",
             "creationDate": (base + timedelta(days=i)).isoformat(),
-            "lastUpdateDate": (base + timedelta(days=i, hours=randint(0,10))).isoformat(),
+            "lastUpdateDate": (
+                base + timedelta(days=i, hours=randint(0, 10))
+            ).isoformat(),
             "deletedDate": None,
         }
         if sample["isDeleted"]:
