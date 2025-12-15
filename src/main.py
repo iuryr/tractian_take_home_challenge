@@ -27,31 +27,32 @@ def validate_schema(json_object: dict[str, Any], pathname: Path, objectschema : 
         logger.warning(f"Error: {e.relative_schema_path}")
         return False
 
+def read_and_validate_json_payloads(client: ClientERP) -> list[dict[str, Any]]:
+    valid_json_payloads: list[dict[str, Any]] = []  # pyright: ignore[reportExplicitAny]
+
+    json_filenames = client.capture_json_filenames(DATA_INBOUND_DIR)
+    for filename in json_filenames:
+        candidate_json = client.read_json_file(filename)
+        if candidate_json is None:
+            continue
+        if validate_schema(candidate_json, filename, CLIENT_WORKORDER_SCHEMA) is True:  # pyright: ignore[reportAny]
+            valid_json_payloads.append(candidate_json)  # pyright: ignore[reportAny]
+    return valid_json_payloads
+
+
 async def main():
     tracos = TracOSAdapter()
     client = ClientERP()
 
-###INBOUND
-    #capture filenames
-    json_files = client.capture_json_filenames(DATA_INBOUND_DIR)
-    #read json files
-    compliant_payloads: list[dict[str, Any]] = []
-    for file in json_files:
-        candidate = client.read_json_file(file)
-        if candidate is None:
-            continue
-        #append valid json to list
-        if validate_schema(candidate, file,CLIENT_WORKORDER_SCHEMA) is True:
-            compliant_payloads.append(candidate)
+###INBOUND FLOW
+    json_payloads : list[dict[str, Any]]= read_and_validate_json_payloads(client)
 
-    #transform json into domain object and store
+    #transform json payload into domain object and store
     domain_objects : list[CustomerSystemWorkorder] = []
-    for obj in compliant_payloads:
-        workorder = CustomerSystemWorkorder.model_validate(obj)
-        # print(workorder)
+    for doc in json_payloads:
+        workorder = CustomerSystemWorkorder.model_validate(doc)
         domain_objects.append(workorder)
-        # print(obj)
-    # print(domain_objects)
+
     #for each domain object, check if it needs to be inserted or updated
     for obj in domain_objects:
         client_workorder_translated = client_to_tracos(obj)
