@@ -19,12 +19,16 @@ class TracOSWorkorder(BaseModel):
     isSynced: bool
     syncedAt: datetime | None = None
 
-    @field_validator("updatedAt")
+    @field_validator("updatedAt", "createdAt", "syncedAt", "deletedAt", mode="after")
     @classmethod
-    def ensure_utc(cls, v: datetime) -> datetime:
-        if v.tzinfo is None:
-            return v.replace(tzinfo=timezone.utc)
-        return v.astimezone(timezone.utc)
+    def ensure_utc(cls, value: datetime | None):
+        if value is None:
+            return value
+        if value.tzinfo is None:
+            raise ValueError("Datetime must be timezone-aware and in UTC")
+        if value.tzinfo != timezone.utc:
+            raise ValueError("Datetime must be in UTC")
+        return value
 
     model_config = ConfigDict(
         extra="forbid",             # additionalProperties: false

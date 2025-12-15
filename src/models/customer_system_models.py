@@ -1,5 +1,5 @@
-from datetime import datetime
-from pydantic import BaseModel, ConfigDict, model_validator
+from datetime import datetime, timezone
+from pydantic import BaseModel, ConfigDict, model_validator, field_validator
 
 class CustomerSystemWorkorder(BaseModel):
     orderNo: int
@@ -14,6 +14,26 @@ class CustomerSystemWorkorder(BaseModel):
     creationDate: datetime
     lastUpdateDate: datetime
     deletedDate: datetime | None = None
+
+    # --- UTC enforcement ---
+    @field_validator(
+        "creationDate",
+        "lastUpdateDate",
+        "deletedDate",
+        mode="after",
+    )
+    @classmethod
+    def ensure_utc(cls, value : datetime | None):
+        if value is None:
+            return value
+
+        if value.tzinfo is None:
+            raise ValueError("Datetime must be timezone-aware and in UTC")
+
+        if value.tzinfo != timezone.utc:
+            raise ValueError("Datetime must be in UTC")
+
+        return value
 
     @model_validator(mode="after")
     def validate_exactly_one_status(self):
