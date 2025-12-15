@@ -64,18 +64,15 @@ def prepare_domain_client_objects(
     return client_objects
 
 
-async def translate_and_sync_to_tracos(
-    client_objects: list[CustomerSystemWorkorder], tracos: TracOSAdapter
+async def sync_to_tracos(
+    client_objs_translated_to_tracos: list[TracOSWorkorder], tracos: TracOSAdapter
 ) -> None:
-    for obj in client_objects:
-        client_workorder_translated = client_to_tracos(obj)
-        tracos_workorder = await tracos.capture_workorder(
-            client_workorder_translated.number
-        )
+    for obj in client_objs_translated_to_tracos:
+        tracos_workorder = await tracos.capture_workorder(obj.number)
         if tracos_workorder is None:
-            await tracos.insert_workorder(client_workorder_translated)
-        elif tracos_workorder.updatedAt > client_workorder_translated.updatedAt:
-            await tracos.update_workorder(client_workorder_translated)
+            await tracos.insert_workorder(obj)
+        elif tracos_workorder.updatedAt > obj.updatedAt:
+            await tracos.update_workorder(obj)
 
 
 async def translate_and_sync_to_client(
@@ -107,7 +104,12 @@ async def main():
     json_payloads = read_json_payloads(client)
     valid_json_payloads = validate_json_payloads(json_payloads)
     client_objects = prepare_domain_client_objects(valid_json_payloads)
-    await translate_and_sync_to_tracos(client_objects, tracos)
+
+    client_obj_as_tracos_obj = []
+    for obj in client_objects:
+        client_obj_as_tracos_obj.append(client_to_tracos(obj))
+
+    await sync_to_tracos(client_obj_as_tracos_obj, tracos)
 
     # OUTBOUND FLOW
     unsynced_tracos_orders = await tracos.capture_unsynced_workorders()
