@@ -14,7 +14,7 @@ MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "workorders")
 
 class TracOSAdapter:
     def __init__(self):
-        self.client = AsyncIOMotorClient(MONGO_URI)
+        self.client = AsyncIOMotorClient(MONGO_URI, tz_aware=True, tzinfo=timezone.utc)
         self.db = self.client[MONGO_DATABASE]
         self.collection = self.db[MONGO_COLLECTION]
 
