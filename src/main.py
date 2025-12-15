@@ -39,28 +39,34 @@ def read_and_validate_json_payloads(client: ClientERP) -> list[dict[str, Any]]:
             valid_json_payloads.append(candidate_json)  # pyright: ignore[reportAny]
     return valid_json_payloads
 
-
-async def main():
-    tracos = TracOSAdapter()
-    client = ClientERP()
-
-###INBOUND FLOW
-    json_payloads : list[dict[str, Any]]= read_and_validate_json_payloads(client)
-
-    #transform json payload into domain object and store
-    domain_objects : list[CustomerSystemWorkorder] = []
+def prepare_domain_client_objects(json_payloads: list[dict[str, Any]])-> list[CustomerSystemWorkorder] :
+    client_objects : list[CustomerSystemWorkorder] = []
     for doc in json_payloads:
         workorder = CustomerSystemWorkorder.model_validate(doc)
-        domain_objects.append(workorder)
+        client_objects.append(workorder)
+    return client_objects
 
-    #for each domain object, check if it needs to be inserted or updated
-    for obj in domain_objects:
+async def translate_and_sync_to_tracos(client_objects : list[CustomerSystemWorkorder], tracos: TracOSAdapter)-> None:
+    for obj in client_objects:
         client_workorder_translated = client_to_tracos(obj)
         tracos_workorder = await tracos.capture_workorder(client_workorder_translated.number)
         if tracos_workorder is None:
             await tracos.insert_workorder(client_workorder_translated)
         elif tracos_workorder.updatedAt > client_workorder_translated.updatedAt:
             await tracos.update_workorder(client_workorder_translated)
+
+
+async def main():
+    tracos = TracOSAdapter()
+    client = ClientERP()
+
+###INBOUND FLOW
+    json_payloads : list[dict[str, Any]] = read_and_validate_json_payloads(client)  # pyright: ignore[reportExplicitAny]
+    #transform json payload into domain object and store
+    client_objects = prepare_domain_client_objects(json_payloads)
+
+    #for each domain object, check if it needs to be inserted or updated
+    await translate_and_sync_to_tracos(client_objects, tracos)
 
 ### OUTBOUND
 
