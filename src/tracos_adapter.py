@@ -1,7 +1,6 @@
 import os
 from datetime import datetime, timezone
 from motor.motor_asyncio import AsyncIOMotorClient
-from typing import Any
 from loguru import logger
 
 from pydantic_core import ValidationError
@@ -92,15 +91,13 @@ class TracOSAdapter:
 
         return unsynced_orders
 
-    async def mark_workorder_as_synced(self, order: TracOSWorkorder) -> None:
+    async def mark_workorder_as_synced(self, orderNo: int) -> None:
         try:
-            logger.info(f"Marking order #{order.number} as synced in MongoDB")
+            logger.info(f"Marking order #{orderNo} as synced in MongoDB")
             await self.collection.update_one(
-                {"_id": order.id},
+                {"_id": orderNo},
                 {"$set": {"isSynced": True, "syncedAt": datetime.now(timezone.utc)}},
             )
-            logger.info(
-                f"Sucessfully marked order #{order.number} as synced in MongoDB"
-            )
+            logger.info(f"Sucessfully marked order #{orderNo} as synced in MongoDB")
         except Exception as e:
             logger.warning(f"Exception: {e}")

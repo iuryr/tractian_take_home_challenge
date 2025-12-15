@@ -75,18 +75,15 @@ async def sync_to_tracos(
             await tracos.update_workorder(obj)
 
 
-async def translate_and_sync_to_client(
-    unsynced_tracos_orders: list[TracOSWorkorder],
-    tracos: TracOSAdapter,
-    client: ClientERP,
+async def sync_to_client(
+    client_objs: list[CustomerSystemWorkorder], tracos: TracOSAdapter, client: ClientERP
 ) -> None:
-    for order in unsynced_tracos_orders:
-        client_workoder = tracos_to_client(order)
-        client_workoder_dict = client_workoder.model_dump(mode="json")
+    for obj in client_objs:
+        client_workoder_dict = obj.model_dump(mode="json")
         try:
             validate(instance=client_workoder_dict, schema=CLIENT_WORKORDER_SCHEMA)
             if client.write_json_file(DATA_OUTBOUND_DIR, client_workoder_dict):
-                await tracos.mark_workorder_as_synced(order)
+                await tracos.mark_workorder_as_synced(obj.orderNo)
         except ValidationError as e:
             logger.warning(
                 f"Translated object of workorder{client_workoder_dict['orderNo']} is non compliant with client ERP schema"
@@ -113,7 +110,11 @@ async def main():
 
     # OUTBOUND FLOW
     unsynced_tracos_orders = await tracos.capture_unsynced_workorders()
-    await translate_and_sync_to_client(unsynced_tracos_orders, tracos, client)
+    tracos_obj_as_client_obj = []
+    for obj in unsynced_tracos_orders:
+        tracos_obj_as_client_obj.append(tracos_to_client(obj))
+
+    await sync_to_client(tracos_obj_as_client_obj, tracos, client)
 
 
 if __name__ == "__main__":
