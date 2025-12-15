@@ -25,7 +25,9 @@ class ClientERP:
             return []
 
     # TODO what if the file has more than one JSON
-    def read_json_file(self, path: Path):
+    def read_json_file(
+        self, path: Path
+    ) -> dict[str, Any] | None:  # pyright: ignore[reportExplicitAny]
         """Read JSON file and return dict object if sucessfull"""
 
         try:

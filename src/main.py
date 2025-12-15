@@ -31,18 +31,26 @@ def validate_schema(
         return False
 
 
-def read_and_validate_json_payloads(client: ClientERP) -> list[dict[str, Any]]:
-    valid_json_payloads: list[dict[str, Any]] = []  # pyright: ignore[reportExplicitAny]
-
+def read_json_payloads(
+    client: ClientERP,
+) -> list[tuple[Path, dict[str, Any]]]:  # pyright: ignore[reportExplicitAny]
+    json_payloads: list[tuple[Path, dict[str, Any]]] = []
     json_filenames = client.capture_json_filenames(DATA_INBOUND_DIR)
     for filename in json_filenames:
         candidate_json = client.read_json_file(filename)
-        if candidate_json is None:
-            continue
-        if (
-            validate_schema(candidate_json, filename, CLIENT_WORKORDER_SCHEMA) is True
-        ):  # pyright: ignore[reportAny]
-            valid_json_payloads.append(candidate_json)  # pyright: ignore[reportAny]
+        if candidate_json:
+            json_payloads.append((filename, candidate_json))
+    return json_payloads
+
+
+def validate_json_payloads(
+    json_payloads: list[tuple[Path, dict[str, Any]]]
+) -> list[dict[str, Any]]:
+    valid_json_payloads: list[dict[str, Any]] = []  # pyright: ignore[reportExplicitAny]
+
+    for payload in json_payloads:
+        if validate_schema(payload[1], payload[0], CLIENT_WORKORDER_SCHEMA) is True:
+            valid_json_payloads.append(payload[1])
     return valid_json_payloads
 
 
@@ -69,7 +77,12 @@ async def translate_and_sync_to_tracos(
         elif tracos_workorder.updatedAt > client_workorder_translated.updatedAt:
             await tracos.update_workorder(client_workorder_translated)
 
-async def translate_and_sync_to_client(unsynced_tracos_orders: list[TracOSWorkorder], tracos: TracOSAdapter, client:ClientERP)->None:
+
+async def translate_and_sync_to_client(
+    unsynced_tracos_orders: list[TracOSWorkorder],
+    tracos: TracOSAdapter,
+    client: ClientERP,
+) -> None:
     for order in unsynced_tracos_orders:
         client_workoder = tracos_to_client(order)
         client_workoder_dict = client_workoder.model_dump(mode="json")
@@ -91,10 +104,9 @@ async def main():
     client = ClientERP()
 
     # INBOUND FLOW
-    received_json_payloads = read_and_validate_json_payloads(
-        client
-    )
-    client_objects = prepare_domain_client_objects(received_json_payloads)
+    json_payloads = read_json_payloads(client)
+    valid_json_payloads = validate_json_payloads(json_payloads)
+    client_objects = prepare_domain_client_objects(valid_json_payloads)
     await translate_and_sync_to_tracos(client_objects, tracos)
 
     # OUTBOUND FLOW
