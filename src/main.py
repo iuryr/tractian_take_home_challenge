@@ -41,7 +41,8 @@ async def main():
         if tracos_workorder is None:
             await tracos.insert_workorder(client_workorder_translated)
             continue
-        elif tracos_workorder.updatedAt < client_workorder_translated.updatedAt:
+        elif tracos_workorder.updatedAt > client_workorder_translated.updatedAt:
+            await tracos.update_workorder(client_workorder_translated)
             continue
          #update
         else:

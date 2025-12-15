@@ -49,3 +49,22 @@ class TracOSAdapter:
         except Exception as e:
             logger.warning(f"Exception: {e}")
 
+    async def update_workorder(self, order:TracOSWorkorder)-> None:
+        synced_order = order.model_copy(update = {
+            "isSynced": True,
+            "syncedAt": datetime.now(timezone.utc)
+            })
+
+        document = synced_order.model_dump(by_alias=True, exclude_none = True, exclude={"_id"})
+
+        try:
+            result = await self.collection.update_one(
+                    {"number": order.number},
+                    {"$set": document}
+            )
+            if result.modified_count == 1:
+                logger.info(f"Updated {order.number} workorder in DB")
+
+        except Exception as e:
+            logger.warning(f"Exception: {e}")
+
