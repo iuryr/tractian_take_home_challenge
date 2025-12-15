@@ -68,3 +68,12 @@ class TracOSAdapter:
         except Exception as e:
             logger.warning(f"Exception: {e}")
 
+    async def capture_unsynced_workorders(self) -> list[TracOSWorkorder]:
+        unsynced_orders = []
+        logger.info("Querying TracOS database for all unsynced workorders")
+        cursor =  self.collection.find({"isSynced" : False})
+        async for doc in cursor:
+            logger.info(f"Unsynced workorder #{doc['number']} captured")
+            unsynced_orders.append(doc)
+        return unsynced_orders
+

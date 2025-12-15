@@ -14,6 +14,7 @@ async def main():
     tracos = TracOSAdapter()
     client = ClientERP()
 
+###INBOUND
     #capture filenames
     json_files = client.capture_json_filenames()
     #read json files
@@ -44,15 +45,9 @@ async def main():
         elif tracos_workorder.updatedAt > client_workorder_translated.updatedAt:
             await tracos.update_workorder(client_workorder_translated)
             continue
-         #update
-        else:
-            # do nothing
-         continue
 
-        # print("TracOS Object:")
-        # print(translated)
-    # workorder = await tracos.capture_workorder(14)
-
+### OUTBOUND
+    unsynced_tracos_orders = await tracos.capture_unsynced_workorders()
 
 
 if __name__ == "__main__":
