@@ -5,7 +5,7 @@ from typing import Any
 
 from client_erp_adapter import ClientERP
 from tracos_adapter import TracOSAdapter
-from translator import client_to_tracos
+from translator import client_to_tracos, tracos_to_client
 
 from models.customer_system_models import CustomerSystemWorkorder
 from models.tracOS_models import TracOSWorkorder
@@ -47,7 +47,21 @@ async def main():
             continue
 
 ### OUTBOUND
+
+    from jsonschema import validate
+    from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
+    import json
+
     unsynced_tracos_orders = await tracos.capture_unsynced_workorders()
+    for order in unsynced_tracos_orders:
+        client_workoder = tracos_to_client(order)
+        client_workoder_dict = client_workoder.model_dump(mode="json")
+        validate(instance = client_workoder_dict, schema=CLIENT_WORKORDER_SCHEMA)
+        with open(str(client_workoder.orderNo) + ".json", "w", encoding="utf-8") as f:
+            json.dump(client_workoder_dict, f)
+        print(client_workoder_dict)
+
+
 
 
 if __name__ == "__main__":

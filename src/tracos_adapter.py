@@ -68,12 +68,19 @@ class TracOSAdapter:
         except Exception as e:
             logger.warning(f"Exception: {e}")
 
+    #TODO tests and exceptions
     async def capture_unsynced_workorders(self) -> list[TracOSWorkorder]:
         unsynced_orders = []
         logger.info("Querying TracOS database for all unsynced workorders")
         cursor =  self.collection.find({"isSynced" : False})
+
         async for doc in cursor:
-            logger.info(f"Unsynced workorder #{doc['number']} captured")
-            unsynced_orders.append(doc)
+            try:
+                workorder = TracOSWorkorder.model_validate(doc)
+                logger.info(f"Unsynced workorder #{doc['number']} captured")
+                unsynced_orders.append(workorder)
+            except ValidationError as e:
+                logger.warning(f"Invalid workorder document skipped: {e}")
+
         return unsynced_orders
 

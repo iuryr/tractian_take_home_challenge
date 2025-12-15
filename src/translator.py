@@ -29,3 +29,19 @@ def client_to_tracos(left: CustomerSystemWorkorder) -> TracOSWorkorder:
                 isSynced = left.isSynced, #are we sure?
                 syncedAt = None
                 )
+
+def tracos_to_client(left: TracOSWorkorder) ->  CustomerSystemWorkorder:
+    return CustomerSystemWorkorder(
+            orderNo= left.number,
+            isActive= left.status == "in_progress",
+            isCanceled = left.status == "cancelled",
+            isDeleted = left.deleted,
+            isDone = left.status == "completed",
+            isOnHold = left.status == "on_hold",
+            isPending = left.status == "pending",
+            isSynced = True,
+            summary = left.description,
+            creationDate=left.createdAt,
+            lastUpdateDate=left.updatedAt,
+            deletedDate=left.deletedAt
+            )
