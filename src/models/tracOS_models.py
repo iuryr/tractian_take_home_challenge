@@ -1,5 +1,5 @@
-from datetime import datetime
-from pydantic import BaseModel, ConfigDict, Field
+from datetime import datetime, timezone
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from bson import ObjectId
 from typing import Literal
 
@@ -18,6 +18,13 @@ class TracOSWorkorder(BaseModel):
     deletedAt: datetime | None = None
     isSynced: bool
     syncedAt: datetime | None = None
+
+    @field_validator("updatedAt")
+    @classmethod
+    def ensure_utc(cls, v: datetime) -> datetime:
+        if v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v.astimezone(timezone.utc)
 
     model_config = ConfigDict(
         extra="forbid",             # additionalProperties: false
