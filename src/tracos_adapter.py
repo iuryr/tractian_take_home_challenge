@@ -84,3 +84,17 @@ class TracOSAdapter:
 
         return unsynced_orders
 
+    async def mark_workorder_as_synced(self, order: TracOSWorkorder) -> None:
+        try:
+            logger.info(f"Marking order #{order.number} as synced in MongoDB")
+            await self.collection.update_one(
+                    {"_id": order.id},
+                    {"$set": {
+                        "isSynced": True,
+                        "syncedAt": datetime.now(timezone.utc)}
+                    })
+            logger.info(f"Sucessfully marked order #{order.number} as synced in MongoDB")
+        except Exception as e:
+            logger.warning(f"Exception: {e}")
+
+

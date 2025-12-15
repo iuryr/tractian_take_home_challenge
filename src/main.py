@@ -41,10 +41,8 @@ async def main():
         tracos_workorder = await tracos.capture_workorder(client_workorder_translated.number)
         if tracos_workorder is None:
             await tracos.insert_workorder(client_workorder_translated)
-            continue
         elif tracos_workorder.updatedAt > client_workorder_translated.updatedAt:
             await tracos.update_workorder(client_workorder_translated)
-            continue
 
 ### OUTBOUND
 
@@ -59,7 +57,7 @@ async def main():
         validate(instance = client_workoder_dict, schema=CLIENT_WORKORDER_SCHEMA)
         with open(str(client_workoder.orderNo) + ".json", "w", encoding="utf-8") as f:
             json.dump(client_workoder_dict, f)
-        print(client_workoder_dict)
+            await tracos.mark_workorder_as_synced(order)
 
 
 
