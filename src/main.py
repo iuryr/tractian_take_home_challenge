@@ -15,10 +15,11 @@ from models.tracOS_models import TracOSWorkorder
 from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
 
 DATA_OUTBOUND_DIR = Path(os.getenv("DATA_OUTBOUND_DIR", "data/outbound"))
+DATA_INBOUND_DIR = Path(os.getenv("DATA_INBOUND_DIR", "data/inbound"))
 
-def validate_schema(json_object: dict[str, Any], pathname: Path, schema : dict[str, Any]) -> bool:
+def validate_schema(json_object: dict[str, Any], pathname: Path, objectschema : dict[str, Any]) -> bool:
     try:
-        validate(instance=json_object, schema=CLIENT_WORKORDER_SCHEMA)
+        validate(instance=json_object, schema=objectschema)
         return True
     except ValidationError as e:
         logger.warning(f"{pathname} is non compliant with client ERP schema")
@@ -32,7 +33,7 @@ async def main():
 
 ###INBOUND
     #capture filenames
-    json_files = client.capture_json_filenames()
+    json_files = client.capture_json_filenames(DATA_INBOUND_DIR)
     #read json files
     compliant_payloads: list[dict[str, Any]] = []
     for file in json_files:
@@ -40,7 +41,7 @@ async def main():
         if candidate is None:
             continue
         #append valid json to list
-        if validate_schema(candidate, file) is True:
+        if validate_schema(candidate, file,CLIENT_WORKORDER_SCHEMA) is True:
             compliant_payloads.append(candidate)
 
     #transform json into domain object and store
@@ -63,13 +64,12 @@ async def main():
 ### OUTBOUND
 
     from jsonschema import validate
-    from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
 
     unsynced_tracos_orders = await tracos.capture_unsynced_workorders()
     for order in unsynced_tracos_orders:
         client_workoder = tracos_to_client(order)
         client_workoder_dict = client_workoder.model_dump(mode="json")
-        validate(instance = client_workoder_dict, schema=CLIENT_WORKORDER_SCHEMA)
+        validate(instance=client_workoder_dict, schema=CLIENT_WORKORDER_SCHEMA)
         if client.write_json_file(DATA_OUTBOUND_DIR, client_workoder_dict):
             await tracos.mark_workorder_as_synced(order)
 

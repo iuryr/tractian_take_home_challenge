@@ -1,28 +1,25 @@
-import os
 import json
-from jsonschema import validate, ValidationError
 from pathlib import Path
 from loguru import logger
 from typing import Any
 
-DATA_INBOUND_DIR = Path(os.getenv("DATA_INBOUND_DIR", "data/inbound"))
 
 class ClientERP:
     def __init__(self):
         pass
     
     #TODO add tests
-    def capture_json_filenames(self) -> list[Path]:
+    def capture_json_filenames(self, dir: Path) -> list[Path]:
         #data_inbound_dir absolute, relative, not a dir
-        if DATA_INBOUND_DIR.is_dir() is False:
+        if dir.is_dir() is False:
             logger.warning("DATA_INBOUND_DIR environment variable does not resolve to a directory.")
             return []
 
-        logger.info(f"Capturing full pathnames of json files inside {DATA_INBOUND_DIR}")
+        logger.info(f"Capturing full pathnames of json files inside {dir}")
         try:
-            return list(DATA_INBOUND_DIR.glob("*.json"))
+            return list(dir.glob("*.json"))
         except PermissionError:
-            logger.warning(f"No permission to read directory {DATA_INBOUND_DIR}")
+            logger.warning(f"No permission to read directory {dir}")
             return []
     
     #TODO what if the file has more than one JSON
@@ -39,7 +36,6 @@ class ClientERP:
         except json.JSONDecodeError:
             logger.warning(f"{path} is a malformed JSON")
             return None
-
 
     #TODO check if there are exceptions to handle
     def write_json_file(self, dir:Path, content: dict[str, Any]) -> bool:
