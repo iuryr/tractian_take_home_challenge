@@ -1,7 +1,10 @@
 """Entrypoint for the application."""
-from pathlib import Path
 import asyncio
+import os
+from pathlib import Path
 from typing import Any
+from jsonschema import ValidationError, validate
+from loguru import logger
 
 from client_erp_adapter import ClientERP
 from tracos_adapter import TracOSAdapter
@@ -9,6 +12,19 @@ from translator import client_to_tracos, tracos_to_client
 
 from models.customer_system_models import CustomerSystemWorkorder
 from models.tracOS_models import TracOSWorkorder
+from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
+
+DATA_OUTBOUND_DIR = Path(os.getenv("DATA_OUTBOUND_DIR", "data/outbound"))
+
+def validate_schema(json_object: dict[str, Any], pathname: Path, schema : dict[str, Any]) -> bool:
+    try:
+        validate(instance=json_object, schema=CLIENT_WORKORDER_SCHEMA)
+        return True
+    except ValidationError as e:
+        logger.warning(f"{pathname} is non compliant with client ERP schema")
+        logger.warning(f"Error: {e.message}")
+        logger.warning(f"Error: {e.relative_schema_path}")
+        return False
 
 async def main():
     tracos = TracOSAdapter()
@@ -24,7 +40,7 @@ async def main():
         if candidate is None:
             continue
         #append valid json to list
-        if client.validate_schema(candidate, file) is True:
+        if validate_schema(candidate, file) is True:
             compliant_payloads.append(candidate)
 
     #transform json into domain object and store
@@ -48,19 +64,14 @@ async def main():
 
     from jsonschema import validate
     from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
-    import json
 
     unsynced_tracos_orders = await tracos.capture_unsynced_workorders()
     for order in unsynced_tracos_orders:
         client_workoder = tracos_to_client(order)
         client_workoder_dict = client_workoder.model_dump(mode="json")
         validate(instance = client_workoder_dict, schema=CLIENT_WORKORDER_SCHEMA)
-        with open(str(client_workoder.orderNo) + ".json", "w", encoding="utf-8") as f:
-            json.dump(client_workoder_dict, f)
+        if client.write_json_file(DATA_OUTBOUND_DIR, client_workoder_dict):
             await tracos.mark_workorder_as_synced(order)
-
-
-
 
 if __name__ == "__main__":
     asyncio.run(main())

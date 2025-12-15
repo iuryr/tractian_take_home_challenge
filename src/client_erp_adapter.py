@@ -4,7 +4,6 @@ from jsonschema import validate, ValidationError
 from pathlib import Path
 from loguru import logger
 from typing import Any
-from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
 
 DATA_INBOUND_DIR = Path(os.getenv("DATA_INBOUND_DIR", "data/inbound"))
 
@@ -41,13 +40,16 @@ class ClientERP:
             logger.warning(f"{path} is a malformed JSON")
             return None
 
-    def validate_schema(self, json_object: dict[str, Any], pathname: Path) -> bool:
-        try:
-            validate(instance=json_object, schema=CLIENT_WORKORDER_SCHEMA)
-            return True
-        except ValidationError as e:
-            logger.warning(f"{pathname} is non compliant with client ERP schema")
-            logger.warning(f"Error: {e.message}")
-            logger.warning(f"Error: {e.relative_schema_path}")
-            return False
 
+    #TODO check if there are exceptions to handle
+    def write_json_file(self, dir:Path, content: dict[str, Any]) -> bool:
+        print(content)
+        filepath : Path = dir / f"{content['orderNo']}.json"
+        try:
+            with open(filepath, "w", encoding="utf-8") as f:
+                json.dump(content, f)
+                logger.info(f"Order #{content['orderNo']} contents saved in {filepath}")
+                return True
+        except PermissionError:
+            logger.warning(f"No permission to write file {filepath}")
+            return False
