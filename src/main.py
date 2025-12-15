@@ -63,15 +63,20 @@ async def main():
 
 ### OUTBOUND
 
-    from jsonschema import validate
 
     unsynced_tracos_orders = await tracos.capture_unsynced_workorders()
     for order in unsynced_tracos_orders:
         client_workoder = tracos_to_client(order)
         client_workoder_dict = client_workoder.model_dump(mode="json")
-        validate(instance=client_workoder_dict, schema=CLIENT_WORKORDER_SCHEMA)
-        if client.write_json_file(DATA_OUTBOUND_DIR, client_workoder_dict):
-            await tracos.mark_workorder_as_synced(order)
+        try:
+            validate(instance=client_workoder_dict, schema=CLIENT_WORKORDER_SCHEMA)
+            if client.write_json_file(DATA_OUTBOUND_DIR, client_workoder_dict):
+                await tracos.mark_workorder_as_synced(order)
+        except ValidationError as e:
+            logger.warning(f"Translated object of workorder{client_workoder_dict['orderNo']} is non compliant with client ERP schema")
+            logger.warning(f"Error: {e.message}")
+            logger.warning(f"Error: {e.relative_schema_path}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
