@@ -4,6 +4,7 @@ import json
 import os
 from random import randint
 from datetime import datetime, timedelta, timezone
+import stat
 from bson import ObjectId
 from typing import Literal, TypedDict
 from random import choice
@@ -142,6 +143,14 @@ def create_schema_uncompliant_customer_workorder_on_filesystem():
         json.dump({"isSchemacorrect": False},f)
     return
 
+def create_no_read_permission_json_on_filesystem():
+    path = f"{DATA_INBOUND_DIR}/no_permission.json"
+    with open(path, "w") as f:
+        json.dump({"isSchemacorrect": False},f)
+
+    os.chmod(path, stat.S_IWUSR)
+
+
 
 async def main():
     logger.info("Starting setup script")
@@ -159,6 +168,7 @@ async def main():
     create_customer_system_workorder_on_file_system(customer_system_workorder_samples)
     create_malformed_json_customer_workorder_on_filesystem()
     create_schema_uncompliant_customer_workorder_on_filesystem()
+    create_no_read_permission_json_on_filesystem()
     logger.info("Customer system workorders samples created.")
 
     logger.info("Setup complete.")
