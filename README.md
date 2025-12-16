@@ -76,7 +76,7 @@ EOF
 ## Architecture and Code Design
 The architecture can be summarized by the figure below:
 
-![Architecture Diagram]("tractian tech challenge.png")
+![Architecture Diagram]("architecture_diagram.png")
 
 
     
