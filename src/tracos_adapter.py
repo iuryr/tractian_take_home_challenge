@@ -15,6 +15,8 @@ MONGO_DATABASE = os.getenv("MONGO_DATABASE", "tractian")
 MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "workorders")
 
 
+
+#TODO docstring
 def retry_on_mongodb_error(func):
     @wraps(func)
     async def wrapper(*args, **kwargs):

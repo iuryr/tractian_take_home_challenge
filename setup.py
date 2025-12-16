@@ -132,6 +132,11 @@ def create_customer_system_workorder_on_file_system(
         with open(f"{DATA_INBOUND_DIR}/{workorder['orderNo']}.json", "w") as f:
             json.dump(workorder, f)
 
+def create_malformed_json_customer_workorder_on_filesystem():
+    with open(f"{DATA_INBOUND_DIR}/malformed.json", "w") as f:
+        f.write('{"field1": "value", "field2"}')
+    return
+
 
 async def main():
     logger.info("Starting setup script")
@@ -147,6 +152,7 @@ async def main():
     logger.info("Creating customer system workorders samples...")
     customer_system_workorder_samples = create_customer_system_sample_workorders()
     create_customer_system_workorder_on_file_system(customer_system_workorder_samples)
+    create_malformed_json_customer_workorder_on_filesystem()
     logger.info("Customer system workorders samples created.")
 
     logger.info("Setup complete.")

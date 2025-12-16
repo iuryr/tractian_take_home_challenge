@@ -8,4 +8,7 @@ clean:
 	rm -rf ./data/inbound/*.json
 	rm -rf ./data/outbound/*.json
 
+run:
+	poetry run python src/main.py
+
 re: clean all
