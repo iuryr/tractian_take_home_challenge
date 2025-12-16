@@ -55,6 +55,7 @@ class TracOSAdapter:
     # TODO add tests
     @retry_on_mongodb_error
     async def capture_workorder(self, orderNo: int) -> TracOSWorkorder | None:
+        """Based on a workorder number, query the database and return a MongoDB document transformed in TracOSWorkorder"""
         logger.info(
             f"Querying {self.collection.name} collection for workorder #{orderNo}"
         )
@@ -79,6 +80,7 @@ class TracOSAdapter:
 
     @retry_on_mongodb_error
     async def insert_workorder(self, order: TracOSWorkorder) -> None:
+        """Transforms TracOSWorkorder and adds it do MongoDB instance"""
         synced_order = order.model_copy(
             update={"isSynced": True, "syncedAt": datetime.now(timezone.utc)}
         )
@@ -94,6 +96,7 @@ class TracOSAdapter:
 
     @retry_on_mongodb_error
     async def update_workorder(self, order: TracOSWorkorder) -> None:
+        """Transforms TracOSWorkorder and updates corresponding MongoDB document"""
         synced_order = order.model_copy(
             update={"isSynced": True, "syncedAt": datetime.now(timezone.utc)}
         )
@@ -115,6 +118,7 @@ class TracOSAdapter:
     # TODO tests and exceptions
     @retry_on_mongodb_error
     async def capture_unsynced_workorders(self) -> list[TracOSWorkorder]:
+        """Query DB for unsynced workorders, captures documents, transforms them and return a list of TracOSWorkorder"""
         unsynced_orders = []
         logger.info("Querying TracOS database for all unsynced workorders")
         cursor = self.collection.find({"isSynced": False})
