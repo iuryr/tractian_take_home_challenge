@@ -1,6 +1,9 @@
 import os
+import sys
+from functools import wraps
 from datetime import datetime, timezone
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.errors import PyMongoError
 from loguru import logger
 
 from pydantic_core import ValidationError
@@ -12,13 +15,39 @@ MONGO_DATABASE = os.getenv("MONGO_DATABASE", "tractian")
 MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "workorders")
 
 
+def retry_on_mongodb_error(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        try:
+            return await func(*args, **kwargs)
+        except PyMongoError as e:
+            logger.error(f"MongoDB error in {func.__name__}: {e}")
+            logger.info(f"Retrying {func.__name__}...")
+            try:
+                return await func(*args, **kwargs)
+            except PyMongoError as retry_error:
+                logger.error(f"Retry failed: {retry_error}")
+                logger.critical("Shutting down due to MongoDB errors")
+                sys.exit(1)
+
+    return wrapper
+
+
 class TracOSAdapter:
     def __init__(self):
-        self.client = AsyncIOMotorClient(MONGO_URI, tz_aware=True, tzinfo=timezone.utc)
+        self.client = AsyncIOMotorClient(
+            MONGO_URI,
+            tz_aware=True,
+            tzinfo=timezone.utc,
+            connectTimeoutMS=5000,
+            socketTimeoutMS=5000,
+            timeoutMS=5000,
+        )
         self.db = self.client[MONGO_DATABASE]
         self.collection = self.db[MONGO_COLLECTION]
 
     # TODO add tests
+    @retry_on_mongodb_error
     async def capture_workorder(self, orderNo: int) -> TracOSWorkorder | None:
         logger.info(
             f"Querying {MONGO_COLLECTION} collection for workorder number {orderNo}"
@@ -42,6 +71,7 @@ class TracOSAdapter:
 
         return workorder
 
+    @retry_on_mongodb_error
     async def insert_workorder(self, order: TracOSWorkorder) -> None:
         synced_order = order.model_copy(
             update={"isSynced": True, "syncedAt": datetime.now(timezone.utc)}
@@ -56,6 +86,7 @@ class TracOSAdapter:
         except Exception as e:
             logger.warning(f"Exception: {e}")
 
+    @retry_on_mongodb_error
     async def update_workorder(self, order: TracOSWorkorder) -> None:
         synced_order = order.model_copy(
             update={"isSynced": True, "syncedAt": datetime.now(timezone.utc)}
@@ -76,6 +107,7 @@ class TracOSAdapter:
             logger.warning(f"Exception: {e}")
 
     # TODO tests and exceptions
+    @retry_on_mongodb_error
     async def capture_unsynced_workorders(self) -> list[TracOSWorkorder]:
         unsynced_orders = []
         logger.info("Querying TracOS database for all unsynced workorders")
@@ -91,6 +123,7 @@ class TracOSAdapter:
 
         return unsynced_orders
 
+    @retry_on_mongodb_error
     async def mark_workorder_as_synced(self, orderNo: int) -> None:
         try:
             logger.info(f"Marking order #{orderNo} as synced in MongoDB")
