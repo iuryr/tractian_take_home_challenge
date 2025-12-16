@@ -97,6 +97,7 @@ utility functions.
 
 
 ### Folder Structure
+
 project_root/
 ├── docker-compose.yml
 ├── Makefile
