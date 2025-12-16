@@ -40,7 +40,7 @@ Integrations Engineer.
 
 Make sure you have the following dependencies installed: `make`, `poetry`,
 `python 3.11+`, `docker` and `docker compose`. Installation of these
-prerequisites (except `poetry`) depends on your package manager).
+prerequisites (except `poetry`) depends on your package manager.
 
 1. **Clone the repository**
    ```bash
@@ -56,6 +56,19 @@ prerequisites (except `poetry`) depends on your package manager).
     ```bash
     make run
     ```
+
+### Environment Variables configuration
+The program accepts the definition of environment variables from .env files.
+Default values are used as an example below - feel free to change them:
+```bash
+cat <<EOF >.env
+DATA_INBOUND_DIR=data/inbound
+DATA_OUTBOUND_DIR=data/outbound
+MONGO_URI="mongodb://localhost:27017"
+MONGO_DATABASE=tractian
+MONGO_COLLECTION=workorders
+EOF
+```
     
 
 ## Non-Technical Requirements
