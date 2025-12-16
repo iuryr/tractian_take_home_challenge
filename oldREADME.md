@@ -1,4 +1,3 @@
-for the challenge's original README click [here](oldREADME.md)
 # Take-Home Challenge: TracOS ↔ Client Integration Flow
 
 ## Introduction
