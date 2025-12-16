@@ -57,6 +57,9 @@ distribution).
     ```bash
     make run
     ```
+4. **Rebuilding and cleaning the project (OPTIONAL)**
+- To rebuild: `make re`
+- To clean: `make clean`
 
 ### Environment Variables configuration
 The program accepts the definition of environment variables from a .env file
@@ -199,23 +202,6 @@ utility functions.
    echo "DATA_INBOUND_DIR=./data/inbound" >> .env
    echo "DATA_OUTBOUND_DIR=./data/outbound" >> .env
    ```
-
-## Project Structure
-
-```
-integrations-engineering-code-assesment/
-├── docker-compose.yml       # MongoDB container configuration
-├── pyproject.toml           # Poetry configuration
-├── setup.py                 # Setup script for sample data
-├── data/                    # Data directories
-│   ├── inbound/             # Client → TracOS JSON files
-│   └── outbound/            # TracOS → Client JSON files
-├── src/                     # Source code
-│   └── main.py              # Main execution script
-│   ...
-└── tests/                   # Test directory
-|   ...
-```
 
 ## Running the Application
 
