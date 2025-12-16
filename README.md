@@ -111,16 +111,16 @@ utility functions.
 │   ├── inbound
 │   └── outbound
 ├── src
-│   ├── client_erp_adapter.py
+│   ├── client_erp_adapter.py #read and write json to relevante directories
 │   ├── __init__.py
-│   ├── main.py
-│   ├── tracos_adapter.py
-│   ├── translator.py
-│   ├── models
+│   ├── main.py # inbound and outbound general flow
+│   ├── tracos_adapter.py # read and write to MongoDB (TracOS)
+│   ├── translator.py # TracOSWorkorder <-> CustomerSystemWorkorder
+│   ├── models #pydantic models
 │   │   ├── customer_system_models.py
 │   │   └── tracOS_models.py
 │   └── schemas
-│       └── client_erp_schema.py
+│       └── client_erp_schema.py #json schema for client payload
 └── tests
 ```
 
