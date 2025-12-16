@@ -96,12 +96,14 @@ in [client_erp_schema.py](./src/schemas/client_erp_schema.py).
 utility functions.
 
 
-### Folder Structure
+## Project Structure
 
 ```
-project_root/
+.
+├── architecture_diagram.png
 ├── docker-compose.yml
 ├── Makefile
+├── oldREADME.md
 ├── poetry.lock
 ├── poetry.toml
 ├── pyproject.toml
@@ -110,19 +112,38 @@ project_root/
 ├── data
 │   ├── inbound
 │   └── outbound
+├── __MACOSX
+│   ├── data
+│   │   ├── inbound
+│   │   └── outbound
+│   └── src
 ├── src
-│   ├── client_erp_adapter.py #read and write json to relevant dirs
+│   ├── client_erp_adapter.py
 │   ├── __init__.py
-│   ├── main.py #main flow
-│   ├── tracos_adapter.py #read and write to MongoDB
-│   ├── translator.py # tracOSWorkorder <-> CustomerSystemWorkorder
-│   ├── models #pydantic models
+│   ├── main.py
+│   ├── tracos_adapter.py
+│   ├── translator.py
+│   ├── models
 │   │   ├── customer_system_models.py
-│   │   └── tracOS_models.py
+│   │   ├── tracOS_models.py
+│   │   └── __pycache__
+│   │       ├── customer_system_models.cpython-311.pyc
+│   │       └── tracOS_models.cpython-311.pyc
+│   ├── __pycache__
+│   │   ├── client_erp_adapter.cpython-311.pyc
+│   │   ├── client_erp.cpython-311.pyc
+│   │   ├── tracos_adapter.cpython-311.pyc
+│   │   └── translator.cpython-311.pyc
 │   └── schemas
-│       └── client_erp_schema.py # json must abide by this format
+│       ├── client_erp_schema.py
+│       └── __pycache__
+│           └── client_erp_schema.cpython-311.pyc
 └── tests
+    ├── test_client_erp.py
+    └── __pycache__
+        └── test_client_erp.cpython-311-pytest-7.4.4.pyc
 ```
+
 
     
 
