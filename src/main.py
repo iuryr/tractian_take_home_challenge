@@ -39,6 +39,7 @@ if not os.path.exists(DATA_OUTBOUND_DIR):
 def validate_schema(
     json_object: dict[str, Any], pathname: Path, objectschema: dict[str, Any]
 ) -> bool:
+    """Validates an object against a provided json schema. pathname is the name of json file that generated such object"""
     try:
         validate(instance=json_object, schema=objectschema)
         return True
@@ -64,6 +65,7 @@ def read_json_payloads(
 def validate_json_payloads(
     json_payloads: list[tuple[Path, dict[str, Any]]]
 ) -> list[dict[str, Any]]:
+    """"Given a list of objects, a new list with only that ones that are compliant to a schema"""
     valid_json_payloads: list[dict[str, Any]] = []  # pyright: ignore[reportExplicitAny]
 
     for payload in json_payloads:
@@ -75,6 +77,7 @@ def validate_json_payloads(
 def prepare_domain_client_objects(
     json_payloads: list[dict[str, Any]]
 ) -> list[CustomerSystemWorkorder]:
+    """From a list of objects creates a list CustomerSystemWorkorder"""
     client_objects: list[CustomerSystemWorkorder] = []
     for doc in json_payloads:
         workorder = CustomerSystemWorkorder.model_validate(doc)
