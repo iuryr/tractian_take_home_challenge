@@ -50,6 +50,10 @@ class ClientERP:
                 json.dump(content, f)
                 logger.info(f"Order #{content['orderNo']} contents saved in {filepath}")
                 return True
+        except FileNotFoundError:
+            logger.warning(f"Directory does not exist: {dir}")
+            return False
+
         except PermissionError:
             logger.warning(f"No permission to write file {filepath}")
             return False
