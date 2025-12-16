@@ -40,7 +40,8 @@ Integrations Engineer.
 
 Make sure you have the following dependencies installed: `make`, `poetry`,
 `python 3.11+`, `docker` and `docker compose`. Installation of these
-prerequisites (except `poetry`) depends on your package manager.
+prerequisites (except `poetry`) depends on your package manager (varies by
+distribution).
 
 1. **Clone the repository**
    ```bash
@@ -58,7 +59,8 @@ prerequisites (except `poetry`) depends on your package manager.
     ```
 
 ### Environment Variables configuration
-The program accepts the definition of environment variables from .env files.
+The program accepts the definition of environment variables from a .env file
+located in the root of the project.
 Default values are used as an example below - feel free to change them:
 ```bash
 cat <<EOF >.env
@@ -69,6 +71,13 @@ MONGO_DATABASE=tractian
 MONGO_COLLECTION=workorders
 EOF
 ```
+
+---
+## Architecture and Code Design
+The architecture can be summarized by the figure below:
+![Architecture Diagram]("tractian tech challenge.png")
+
+
     
 
 ## Non-Technical Requirements
