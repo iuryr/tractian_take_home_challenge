@@ -10,11 +10,6 @@ from pydantic_core import ValidationError
 
 from models.tracOS_models import TracOSWorkorder
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-MONGO_DATABASE = os.getenv("MONGO_DATABASE", "tractian")
-MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "workorders")
-
-
 
 #TODO docstring
 def retry_on_mongodb_error(func):
@@ -36,29 +31,29 @@ def retry_on_mongodb_error(func):
 
 
 class TracOSAdapter:
-    def __init__(self):
+    def __init__(self, uri:str, db:str, collection:str):
         self.client = AsyncIOMotorClient(
-            MONGO_URI,
+            uri,
             tz_aware=True,
             tzinfo=timezone.utc,
             connectTimeoutMS=5000,
             socketTimeoutMS=5000,
             timeoutMS=5000,
         )
-        self.db = self.client[MONGO_DATABASE]
-        self.collection = self.db[MONGO_COLLECTION]
+        self.db = self.client[db]
+        self.collection = self.db[collection]
 
     # TODO add tests
     @retry_on_mongodb_error
     async def capture_workorder(self, orderNo: int) -> TracOSWorkorder | None:
         logger.info(
-            f"Querying {MONGO_COLLECTION} collection for workorder number {orderNo}"
+            f"Querying {self.collection.name} collection for workorder #{orderNo}"
         )
         doc = await self.collection.find_one({"number": orderNo})
 
         if doc is None:
             logger.info(
-                f"Workorder {orderNo} not found in {MONGO_COLLECTION} collection"
+                f"Workorder {orderNo} not found in {self.collection.name} collection"
             )
             return None
 

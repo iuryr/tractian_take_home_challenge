@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 from jsonschema import ValidationError, validate
 from loguru import logger
+from dotenv import load_dotenv
 
 from client_erp_adapter import ClientERP
 from tracos_adapter import TracOSAdapter
@@ -14,8 +15,17 @@ from models.customer_system_models import CustomerSystemWorkorder
 from models.tracOS_models import TracOSWorkorder
 from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
 
+# ----- CONFIG -----
+load_dotenv()
 DATA_OUTBOUND_DIR = Path(os.getenv("DATA_OUTBOUND_DIR", "data/outbound"))
 DATA_INBOUND_DIR = Path(os.getenv("DATA_INBOUND_DIR", "data/inbound"))
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MONGO_DATABASE = os.getenv("MONGO_DATABASE", "tractian")
+MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "workorders")
+print(f"DATA_INBOUND_DIR: {DATA_INBOUND_DIR}")
+print(f"DATA_OUTBOUND_DIR: {DATA_OUTBOUND_DIR}")
+print(f"MONGO_URI: {MONGO_URI}")
+# ------------------
 
 
 def validate_schema(
@@ -94,7 +104,7 @@ async def sync_to_client(
 
 
 async def main():
-    tracos = TracOSAdapter()
+    tracos = TracOSAdapter(MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION)
     client = ClientERP()
 
     # INBOUND FLOW
