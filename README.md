@@ -117,9 +117,9 @@ project_root/
 │   ├── translator.py # tracOSWorkorder <-> CustomerSystemWorkorder
 │   ├── models #pydantic models
 │   │   ├── customer_system_models.py
-│   │   ├── tracOS_models.py
+│   │   └── tracOS_models.py
 │   └── schemas
-│       ├── client_erp_schema.py # json must abide by this format
+│       └── client_erp_schema.py # json must abide by this format
 └── tests
 
     
