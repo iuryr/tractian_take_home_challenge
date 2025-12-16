@@ -6,11 +6,11 @@ from typing import Any
 
 class ClientERP:
     def __init__(self):
-        pass
+        return
 
     # TODO add tests
     def capture_json_filenames(self, dir: Path) -> list[Path]:
-        # data_inbound_dir absolute, relative, not a dir
+        """Captures json filenames for future processing"""
         if dir.is_dir() is False:
             logger.warning(
                 "DATA_INBOUND_DIR environment variable does not resolve to a directory."
@@ -24,7 +24,7 @@ class ClientERP:
             logger.warning(f"No permission to read directory {dir}")
             return []
 
-    # TODO what if the file has more than one JSON
+    # TODO tests
     def read_json_file(
         self, path: Path
     ) -> dict[str, Any] | None:  # pyright: ignore[reportExplicitAny]
@@ -41,8 +41,9 @@ class ClientERP:
             logger.warning(f"{path} is a malformed JSON")
             return None
 
-    # TODO check if there are exceptions to handle
+    # TODO tests
     def write_json_file(self, dir: Path, content: dict[str, Any]) -> bool:
+        """Writes contents of an object to a file in the filesystem"""
         filepath: Path = dir / f"{content['orderNo']}.json"
         try:
             with open(filepath, "w", encoding="utf-8") as f:
