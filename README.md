@@ -3,33 +3,18 @@ for the challenge's original README click [here](oldREADME.md)
 
 ## Introduction
 
-This repository contains a technical assesment to evaluate your skills on a simulated scenario of an integration between Tractian's CMMS (TracOS) and a customer's ERP.
-
-The test objective is to build an asynchronous Python service that simulates an integration between our CMMS (TracOS) and a customer's ERP software, containing both an inbound (client → TracOS) and outbound (TracOS → client) flows. The integration focus is to sync work orders between the systems.
-
-The customer's system will be simulated by JSON files representing API responses. Our system will be represented by a MongoDB instance.
-
-Create at least three modules: one to handle read/write on our system (TracOS), one to handle read/write on the customer's system and one to handle translations between systems. The main objective by creating these modules is to have a project where it is easy to add an integration to another system, without needing to modify the existing modules, only expanding them.
-
-Notes: 
-- The dependency management in this project must be done using Poetry.
-- There is a docker-compose to create a MongoDB instance, figure out how to use it.
-- There is a setup.py file that creates samples workorders on our system and on the customer's system (JSON file). You need to run this after you create the MongoDB instance with docker-compose. That file also has some tips on how to build your own code.
-
-The main objectives of this assesment are to demonstrate:
-
-- Clarity in functional requirements  
-- Attention to expected system behavior  
-- Code organization for future maintenance  
+This repository contains Iury Santos' solution to the "TracOS ↔ Client
+Integration Flow" technical challenge as part of the hiring process for System
+Integrations Engineer.
 
 ---
 
-## What the System Must Do
+## What the System Does
 
-1. **Inbound**  
+1. **Inbound** Flow  
    - Read JSON files (simulating the client's API response) from an input folder  
    - For each work order:  
-     - Validate required fields (e.g., `id`, `status`, `createdAt`)  
+     - Validate required fields using json schema
      - Translate payload from client format → TracOS format  
      - Insert or update the record in a MongoDB collection  
 
@@ -41,8 +26,8 @@ The main objectives of this assesment are to demonstrate:
      - Mark the document in MongoDB with `isSynced = true` and set a `syncedAt` timestamp  
 
 3. **Translation / Normalization**  
-   - Normalize date fields to UTC ISO 8601  
-   - Map enums/status values (e.g., client uses `"NEW"`, TracOS uses `"created"`)  
+   - All date fields are enforced to be ISO 8061 compliant via Pydantic model
+     validations
 
 4. **Resilience**  
    - Clear success and error logs without unreadable stack traces  
@@ -50,6 +35,28 @@ The main objectives of this assesment are to demonstrate:
    - Simple retry or reconnect logic for MongoDB failures  
 
 ---
+
+## Installing and running
+
+Make sure you have the following dependencies installed: `make`, `poetry`,
+`python 3.11+`, `docker` and `docker compose`. Installation of these
+prerequisites (except `poetry`) depends on your package manager).
+
+1. **Clone the repository**
+   ```bash
+   git clone git@github.com:iuryr/tractian_take_home_challenge.git
+   cd tractian_take_home_challenge
+   ```
+2. **Building the project**
+    ```bash
+    make all #this will build MongoDB container and run setup.py to generate
+    samples
+    ```
+3. **Running the project**
+    ```bash
+    make run
+    ```
+    
 
 ## Non-Technical Requirements
 
@@ -96,11 +103,6 @@ The main objectives of this assesment are to demonstrate:
 
 ### Installation Steps
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd integrations-engineering-code-assesment
-   ```
 
 2. **Install dependencies with Poetry**
    ```bash
