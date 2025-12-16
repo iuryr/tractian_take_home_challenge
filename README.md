@@ -91,6 +91,36 @@ made by functions defined in [translator.py](./src/translator.py).
 
 Input data from client ERP are always validated against a JSON schema contained
 in [client_erp_schema.py](./src/schemas/client_erp_schema.py).
+
+[main.y](./src/main.py) has the general flow of the program, as well as some
+utility functions.
+
+
+### Folder Structure
+
+├── docker-compose.yml
+├── Makefile
+├── poetry.lock
+├── poetry.toml
+├── pyproject.toml
+├── README.md
+├── setup.py
+├── data
+│   ├── inbound
+│   └── outbound
+├── src
+│   ├── client_erp_adapter.py #read and write json to relevant dirs
+│   ├── __init__.py
+│   ├── main.py #main flow
+│   ├── tracos_adapter.py #read and write to MongoDB
+│   ├── translator.py # tracOSWorkorder <-> CustomerSystemWorkorder
+│   ├── models #pydantic models
+│   │   ├── customer_system_models.py
+│   │   ├── tracOS_models.py
+│   └── schemas
+│       ├── client_erp_schema.py # json must abide by this format
+└── tests
+
     
 
 ## Non-Technical Requirements
