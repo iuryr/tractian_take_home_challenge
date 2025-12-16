@@ -43,6 +43,11 @@ class TracOSAdapter:
         self.db = self.client[db]
         self.collection = self.db[collection]
 
+    @retry_on_mongodb_error
+    async def check_connection(self):
+            await self.collection.find_one({}, projection={"_id": 1})
+            logger.info("MongoDB instance, database and collection are recheable. Proceeding...")
+
     # TODO add tests
     @retry_on_mongodb_error
     async def capture_workorder(self, orderNo: int) -> TracOSWorkorder | None:

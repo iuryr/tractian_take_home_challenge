@@ -22,9 +22,11 @@ DATA_INBOUND_DIR = Path(os.getenv("DATA_INBOUND_DIR", "data/inbound"))
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE", "tractian")
 MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "workorders")
-print(f"DATA_INBOUND_DIR: {DATA_INBOUND_DIR}")
-print(f"DATA_OUTBOUND_DIR: {DATA_OUTBOUND_DIR}")
-print(f"MONGO_URI: {MONGO_URI}")
+logger.info(f"VARIABLE VALUE FOR CONFERENCE -> DATA_INBOUND_DIR: {DATA_INBOUND_DIR}")
+logger.info(f"VARIABLE VALUE FOR CONFERENCE -> DATA_OUTBOUND_DIR: {DATA_OUTBOUND_DIR}")
+logger.info(f"VARIABLE VALUE FOR CONFERENCE -> MONGO_URI: {MONGO_URI}")
+logger.info(f"VARIABLE VALUE FOR CONFERENCE -> MONGO_DATABASE: {MONGO_DATABASE}")
+logger.info(f"VARIABLE VALUE FOR CONFERENCE -> MONGO_COLLECTION: {MONGO_COLLECTION}")
 # ------------------
 
 
@@ -106,6 +108,8 @@ async def sync_to_client(
 async def main():
     tracos = TracOSAdapter(MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION)
     client = ClientERP()
+
+    await tracos.check_connection()
 
     # INBOUND FLOW
     json_payloads = read_json_payloads(client)
