@@ -137,6 +137,11 @@ def create_malformed_json_customer_workorder_on_filesystem():
         f.write('{"field1": "value", "field2"}')
     return
 
+def create_schema_uncompliant_customer_workorder_on_filesystem():
+    with open(f"{DATA_INBOUND_DIR}/schema_uncompliant.json", "w") as f:
+        json.dump({"isSchemacorrect": False},f)
+    return
+
 
 async def main():
     logger.info("Starting setup script")
@@ -153,6 +158,7 @@ async def main():
     customer_system_workorder_samples = create_customer_system_sample_workorders()
     create_customer_system_workorder_on_file_system(customer_system_workorder_samples)
     create_malformed_json_customer_workorder_on_filesystem()
+    create_schema_uncompliant_customer_workorder_on_filesystem()
     logger.info("Customer system workorders samples created.")
 
     logger.info("Setup complete.")
