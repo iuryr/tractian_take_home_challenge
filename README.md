@@ -98,6 +98,7 @@ utility functions.
 
 ### Folder Structure
 
+```
 project_root/
 ├── docker-compose.yml
 ├── Makefile
@@ -121,6 +122,7 @@ project_root/
 │   └── schemas
 │       └── client_erp_schema.py # json must abide by this format
 └── tests
+```
 
     
 
