@@ -10,9 +10,13 @@ from pydantic_core import ValidationError
 
 from models.tracOS_models import TracOSWorkorder
 
+#MongoDB constants
+CONNECTTIMEOUTMS=5000
+SOCKETTIMEOUTMS=5000
+TIMEOUTMS=5000
 
-#TODO docstring
 def retry_on_mongodb_error(func):
+    """Decorator for MongoDB error handling with one extra retry"""
     @wraps(func)
     async def wrapper(*args, **kwargs):
         try:
@@ -36,9 +40,9 @@ class TracOSAdapter:
             uri,
             tz_aware=True,
             tzinfo=timezone.utc,
-            connectTimeoutMS=5000,
-            socketTimeoutMS=5000,
-            timeoutMS=5000,
+            connectTimeoutMS=CONNECTTIMEOUTMS,
+            socketTimeoutMS=SOCKETTIMEOUTMS,
+            timeoutMS=TIMEOUTMS,
         )
         self.db = self.client[db]
         self.collection = self.db[collection]
