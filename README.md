@@ -100,13 +100,13 @@ utility functions.
 
 ```
 .
-├── docker-compose.yml
-├── Makefile
+├── docker-compose.yml #Create MongoDB instance on container and run it
+├── Makefile #automates building, rebuilding and cleaning of project
 ├── poetry.lock
 ├── poetry.toml
 ├── pyproject.toml
 ├── README.md
-├── setup.py
+├── setup.py #Generates sample data
 ├── data
 │   ├── inbound
 │   └── outbound
