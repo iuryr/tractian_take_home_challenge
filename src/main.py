@@ -17,17 +17,23 @@ from schemas.client_erp_schema import CLIENT_WORKORDER_SCHEMA
 
 # ----- CONFIG -----
 load_dotenv()
-DATA_OUTBOUND_DIR = Path(os.getenv("DATA_OUTBOUND_DIR", "data/outbound"))
 DATA_INBOUND_DIR = Path(os.getenv("DATA_INBOUND_DIR", "data/inbound"))
+DATA_OUTBOUND_DIR = Path(os.getenv("DATA_OUTBOUND_DIR", "data/outbound"))
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE", "tractian")
 MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "workorders")
+
 logger.info(f"VARIABLE VALUE FOR CONFERENCE -> DATA_INBOUND_DIR: {DATA_INBOUND_DIR}")
 logger.info(f"VARIABLE VALUE FOR CONFERENCE -> DATA_OUTBOUND_DIR: {DATA_OUTBOUND_DIR}")
 logger.info(f"VARIABLE VALUE FOR CONFERENCE -> MONGO_URI: {MONGO_URI}")
 logger.info(f"VARIABLE VALUE FOR CONFERENCE -> MONGO_DATABASE: {MONGO_DATABASE}")
 logger.info(f"VARIABLE VALUE FOR CONFERENCE -> MONGO_COLLECTION: {MONGO_COLLECTION}")
 # ------------------
+
+#create outbound directory if it does not exist
+if not os.path.exists(DATA_OUTBOUND_DIR):
+    logger.info(f"Creating outbound directory {DATA_OUTBOUND_DIR}")
+    os.makedirs(DATA_OUTBOUND_DIR)
 
 
 def validate_schema(

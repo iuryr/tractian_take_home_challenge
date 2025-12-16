@@ -82,8 +82,8 @@ class TracOSAdapter:
         document = synced_order.model_dump(by_alias=True, exclude_none=True)
         try:
             result = await self.collection.insert_one(document)
-            logger.info(
-                f"Added new document to MongoDB instance: _id: {result.inserted_id}"
+            logger.success(
+                f"Added workorder #{order.number} to MongoDB instance: _id: {result.inserted_id}"
             )
         except Exception as e:
             logger.warning(f"Exception: {e}")
@@ -103,7 +103,7 @@ class TracOSAdapter:
                 {"number": order.number}, {"$set": document}
             )
             if result.modified_count == 1:
-                logger.info(f"Updated {order.number} workorder in DB")
+                logger.success(f"Updated workorder #{order.number} in MongoDB")
 
         except Exception as e:
             logger.warning(f"Exception: {e}")
@@ -133,6 +133,6 @@ class TracOSAdapter:
                 {"_id": orderNo},
                 {"$set": {"isSynced": True, "syncedAt": datetime.now(timezone.utc)}},
             )
-            logger.info(f"Sucessfully marked order #{orderNo} as synced in MongoDB")
+            logger.success(f"Successfully marked order #{orderNo} as synced in MongoDB")
         except Exception as e:
             logger.warning(f"Exception: {e}")

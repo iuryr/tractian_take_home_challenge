@@ -43,17 +43,16 @@ class ClientERP:
 
     # TODO check if there are exceptions to handle
     def write_json_file(self, dir: Path, content: dict[str, Any]) -> bool:
-        print(content)
         filepath: Path = dir / f"{content['orderNo']}.json"
         try:
             with open(filepath, "w", encoding="utf-8") as f:
                 json.dump(content, f)
-                logger.info(f"Order #{content['orderNo']} contents saved in {filepath}")
+                logger.success(f"Order #{content['orderNo']} contents saved in {filepath}")
                 return True
         except FileNotFoundError:
-            logger.warning(f"Directory does not exist: {dir}")
+            logger.error(f"Outbound directory '{dir}' does not exist. Could not write {content['orderNo']}.json")
             return False
 
         except PermissionError:
-            logger.warning(f"No permission to write file {filepath}")
+            logger.error(f"No permission to write file {filepath}")
             return False
