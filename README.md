@@ -57,14 +57,14 @@ distribution).
     ```bash
     make run
     ```
-4. **Rebuilding and cleaning the project (OPTIONAL)**
+4. **Rebuilding and cleaning the project**
 - To rebuild: `make re`
 - To clean: `make clean`
 
-5. **End to End testing (at project root)**
-
-`poetry run pytest -v` or `poetry run pytest -v -s` (if you want to see log
-messages)
+5. **Run tests**
+    ```bash
+    make test
+    ```
 
 
 ### Environment Variables configuration

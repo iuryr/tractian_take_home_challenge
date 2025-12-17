@@ -11,4 +11,8 @@ clean:
 run:
 	poetry run python src/main.py
 
+test:
+	docker compose up -d
+	poetry run pytest -v
+
 re: clean all
