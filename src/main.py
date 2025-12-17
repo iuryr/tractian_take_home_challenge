@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 from adapters.client_erp_adapter import ClientERP
 from adapters.tracos_adapter import TracOSAdapter
-from translator import client_to_tracos, tracos_to_client
+from services.translator import client_to_tracos, tracos_to_client
 
 from models.customer_system_models import CustomerSystemWorkorder
 from models.tracOS_models import TracOSWorkorder
