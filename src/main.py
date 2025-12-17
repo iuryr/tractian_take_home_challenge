@@ -92,7 +92,8 @@ async def sync_to_tracos(
         tracos_workorder = await tracos.capture_workorder(obj.number)
         if tracos_workorder is None:
             await tracos.insert_workorder(obj)
-        elif tracos_workorder.updatedAt > obj.updatedAt:
+        #if data on DB is older (came before) than inbound data, then update
+        elif tracos_workorder.updatedAt < obj.updatedAt:
             await tracos.update_workorder(obj)
 
 
