@@ -109,27 +109,30 @@ utility functions.
 
 ```
 .
-├── docker-compose.yml #Create MongoDB instance on container and run it
-├── Makefile #automates building, rebuilding and cleaning of project
+├── docker-compose.yml            # builds and run MongoDB container
+├── Makefile                      # build, run, clean and test project
 ├── poetry.lock
 ├── poetry.toml
 ├── pyproject.toml
 ├── README.md
-├── setup.py #Generates sample data
+├── setup.py                      #generate sample data
 ├── data
 │   ├── inbound
 │   └── outbound
+├── docs
 ├── src
-│   ├── client_erp_adapter.py #read and write json to relevante directories
 │   ├── __init__.py
-│   ├── main.py # inbound and outbound general flow
-│   ├── tracos_adapter.py # read and write to MongoDB (TracOS)
-│   ├── translator.py # TracOSWorkorder <-> CustomerSystemWorkorder
-│   ├── models #pydantic models
+│   ├── main.py                   # entrypoint and "glue" logic
+│   ├── adapters
+│   │   ├── client_erp_adapter.py # read/write from customer ERP
+│   │   └── tracos_adapter.py     # read/write to TracOS (MongoDB)
+│   ├── models                    # in-memory objects with pydantic enforcement
 │   │   ├── customer_system_models.py
 │   │   └── tracOS_models.py
-│   └── schemas
-│       └── client_erp_schema.py #json schema for client payload
+│   ├── schemas                   # validation for json payloads
+│   │   └── client_erp_schema.py
+│   └── services
+│       └── translator.py         # translations between models
 └── tests
 ```
 
