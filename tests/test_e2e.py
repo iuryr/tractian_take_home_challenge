@@ -12,8 +12,8 @@ from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from main import main
-from tracos_adapter import TracOSAdapter
-from client_erp_adapter import ClientERP
+from adapters.tracos_adapter import TracOSAdapter
+from adapters.client_erp_adapter import ClientERP
 from models.tracOS_models import TracOSWorkorder
 from models.customer_system_models import CustomerSystemWorkorder
 

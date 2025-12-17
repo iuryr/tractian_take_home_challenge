@@ -7,8 +7,8 @@ from jsonschema import ValidationError, validate
 from loguru import logger
 from dotenv import load_dotenv
 
-from client_erp_adapter import ClientERP
-from tracos_adapter import TracOSAdapter
+from adapters.client_erp_adapter import ClientERP
+from adapters.tracos_adapter import TracOSAdapter
 from translator import client_to_tracos, tracos_to_client
 
 from models.customer_system_models import CustomerSystemWorkorder
