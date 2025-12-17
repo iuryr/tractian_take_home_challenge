@@ -1,4 +1,4 @@
-for the challenge's original README click [here](oldREADME.md)
+for the challenge's original README click [here](./docs/oldREADME.md)
 # Take-Home Challenge: TracOS ↔ Client Integration Flow
 
 ## Introduction
@@ -85,7 +85,7 @@ EOF
 ## Architecture and Code Design
 The architecture can be summarized by the figure below:
 
-![Architecture Diagram](./architecture_diagram.png)
+![Architecture Diagram](./docs/architecture_diagram.png)
 
 Class `ClientERP` in [client_erp_adapter.py](./src/client_erp_adapter.py) is responsible for reading
 and writing json to relevant directories. Class `TracOSAdapter` in [tracos_adapter.py](./src/tracos_adapter.py) is responsible
