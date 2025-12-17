@@ -61,6 +61,11 @@ distribution).
 - To rebuild: `make re`
 - To clean: `make clean`
 
+5. End to End testing (at project root)
+```bash
+poetry run pytest test_e2e.py -v
+```
+
 ### Environment Variables configuration
 The program accepts the definition of environment variables from a .env file
 located in the root of the project.
