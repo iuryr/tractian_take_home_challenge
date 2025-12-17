@@ -87,8 +87,8 @@ The architecture can be summarized by the figure below:
 
 ![Architecture Diagram](./docs/architecture_diagram.png)
 
-Class `ClientERP` in [client_erp_adapter.py](./src/client_erp_adapter.py) is responsible for reading
-and writing json to relevant directories. Class `TracOSAdapter` in [tracos_adapter.py](./src/tracos_adapter.py) is responsible
+Class `ClientERP` in [client_erp_adapter.py](./src/adapters/client_erp_adapter.py) is responsible for reading
+and writing json to relevant directories. Class `TracOSAdapter` in [tracos_adapter.py](./src/adapters/tracos_adapter.py) is responsible
 for reading and writing to the relevant MongoDB instance, as well as performing
 some transformations between dicts (output of queries) and in-memory objects
 (used for translation to and from client format).
@@ -96,13 +96,12 @@ some transformations between dicts (output of queries) and in-memory objects
 We use `pydantic` to enforce that in-memory objects used by the main application
 are always well formed and adhere to restraints (like having UTC aware
 datetime). Translation between in-memory formats form TracOS and client ERP are
-made by functions defined in [translator.py](./src/translator.py).
+made by functions defined in [translator.py](./src/services/translator.py).
 
 Input data from client ERP are always validated against a JSON schema contained
 in [client_erp_schema.py](./src/schemas/client_erp_schema.py).
 
-[main.y](./src/main.py) has the general flow of the program, as well as some
-utility functions.
+[main.y](./src/main.py) has the general flow of the program.
 
 
 ## Project Structure
