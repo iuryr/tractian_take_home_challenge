@@ -48,7 +48,7 @@ distribution).
    git clone git@github.com:iuryr/tractian_take_home_challenge.git
    cd tractian_take_home_challenge
    ```
-2. **Building the project**
+2. **Preparing to run the project**
     ```bash
     make all #this will build MongoDB container and run setup.py to generate
     samples
@@ -61,10 +61,10 @@ distribution).
 - To rebuild: `make re`
 - To clean: `make clean`
 
-5. End to End testing (at project root)
-```bash
-poetry run pytest test_e2e.py -v
-```
+5. **End to End testing (at project root)**
+`poetry run pytest -v` or `poetry run pytest -v -s` (if you want to see log
+messages)
+
 
 ### Environment Variables configuration
 The program accepts the definition of environment variables from a .env file
@@ -131,101 +131,4 @@ utility functions.
 │       └── client_erp_schema.py #json schema for client payload
 └── tests
 ```
-
-
-    
-
-## Non-Technical Requirements
-
-- **Complete README**: explain how to run and a summary of the chosen architecture
-- **Configuration via environment variables**:  
-  - `MONGO_URI` → MongoDB connection string  
-  - `DATA_INBOUND_DIR` and `DATA_OUTBOUND_DIR` → input/output folders  
-- **Basic tests**:  
-  - Sample input and output JSON  
-  - End-to-end workflow verification (full coverage not required)  
-- **Best practices**: informative logging, readable code, simple modularity  
-
----
-
-## Deliverables
-
-1. Git repository forking this repository, containing:  
-   - Running `main.py` should start the entire pipeline  
-   - Clear modules for:  
-     - Read/write on our system
-     - Read/write on customer's system
-     - Translating data between systems
-2. Complete the `README.md` file with the folder structure and a general overview of how the system works.  
-3. At least **one** automated test with `pytest` testing the end-to-end flow  
-
----
-## Evaluation Criteria
-
-- **Functionality**: inbound/outbound flows work as described  
-- **Robustness**: proper error handling and logging  
-- **Clarity**: self-explanatory, comprehensive README  
-- **Maintainability**: clear separation of concerns, modular code  
-- **Tests**: basic coverage of the main workflow  
-
----
-
-## Setting Up The Project
-
-### Prerequisites
-
-- Python 3.11+
-- Docker and Docker Compose
-- Poetry for dependency management
-
-### Installation Steps
-
-
-2. **Install dependencies with Poetry**
-   ```bash
-   # Install Poetry if you don't have it
-   curl -sSL https://install.python-poetry.org | python3 -
-   
-   # Install dependencies
-   poetry install
-   ```
-
-3. **Start MongoDB using Docker Compose**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Run the setup script to initialize sample data**
-   ```bash
-   poetry run python setup.py
-   ```
-
-5. **Configure environment variables**
-   ```bash
-   # Create a .env file or export directly in your shell
-   echo "MONGO_URI=mongodb://localhost:27017/tractian" > .env
-   echo "DATA_INBOUND_DIR=./data/inbound" >> .env
-   echo "DATA_OUTBOUND_DIR=./data/outbound" >> .env
-   ```
-
-## Running the Application
-
-1. **Execute the main script**
-   ```bash
-   python src/main.py
-   ```
-
-## Testing
-
-Run the tests with:
-```bash
-poetry run pytest
-```
-
-## Troubleshooting
-
-- **MongoDB Connection Issues**: Ensure Docker is running and the MongoDB container is up with `docker ps`
-- **Missing Dependencies**: Verify Poetry environment is activated or run `poetry install` again
-- **Permission Issues**: Check file permissions for data directories
-
 
