@@ -48,10 +48,14 @@ class ClientERP:
         try:
             with open(filepath, "w", encoding="utf-8") as f:
                 json.dump(content, f)
-                logger.success(f"Order #{content['orderNo']} contents saved in {filepath}")
+                logger.success(
+                    f"Order #{content['orderNo']} contents saved in {filepath}"
+                )
                 return True
         except FileNotFoundError:
-            logger.error(f"Outbound directory '{dir}' does not exist. Could not write {content['orderNo']}.json")
+            logger.error(
+                f"Outbound directory '{dir}' does not exist. Could not write {content['orderNo']}.json"
+            )
             return False
 
         except PermissionError:

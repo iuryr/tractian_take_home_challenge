@@ -10,13 +10,15 @@ from pydantic_core import ValidationError
 
 from models.tracOS_models import TracOSWorkorder
 
-#MongoDB constants
-CONNECTTIMEOUTMS=5000
-SOCKETTIMEOUTMS=5000
-TIMEOUTMS=5000
+# MongoDB constants
+CONNECTTIMEOUTMS = 5000
+SOCKETTIMEOUTMS = 5000
+TIMEOUTMS = 5000
+
 
 def retry_on_mongodb_error(func):
     """Decorator for MongoDB error handling with one extra retry"""
+
     @wraps(func)
     async def wrapper(*args, **kwargs):
         try:
@@ -35,7 +37,7 @@ def retry_on_mongodb_error(func):
 
 
 class TracOSAdapter:
-    def __init__(self, uri:str, db:str, collection:str):
+    def __init__(self, uri: str, db: str, collection: str):
         self.client = AsyncIOMotorClient(
             uri,
             tz_aware=True,
@@ -49,8 +51,10 @@ class TracOSAdapter:
 
     @retry_on_mongodb_error
     async def check_connection(self):
-            await self.collection.find_one({}, projection={"_id": 1})
-            logger.info("MongoDB instance, database and collection are recheable. Proceeding...")
+        await self.collection.find_one({}, projection={"_id": 1})
+        logger.info(
+            "MongoDB instance, database and collection are recheable. Proceeding..."
+        )
 
     # TODO add tests
     @retry_on_mongodb_error

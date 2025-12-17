@@ -30,7 +30,7 @@ logger.info(f"VARIABLE VALUE FOR CONFERENCE -> MONGO_DATABASE: {MONGO_DATABASE}"
 logger.info(f"VARIABLE VALUE FOR CONFERENCE -> MONGO_COLLECTION: {MONGO_COLLECTION}")
 # ------------------
 
-#create outbound directory if it does not exist
+# create outbound directory if it does not exist
 if not os.path.exists(DATA_OUTBOUND_DIR):
     logger.info(f"Creating outbound directory {DATA_OUTBOUND_DIR}")
     os.makedirs(DATA_OUTBOUND_DIR)
@@ -65,7 +65,7 @@ def read_json_payloads(
 def validate_json_payloads(
     json_payloads: list[tuple[Path, dict[str, Any]]]
 ) -> list[dict[str, Any]]:
-    """"Given a list of objects, a new list with only that ones that are compliant to a schema"""
+    """ "Given a list of objects, a new list with only that ones that are compliant to a schema"""
     valid_json_payloads: list[dict[str, Any]] = []  # pyright: ignore[reportExplicitAny]
 
     for payload in json_payloads:
@@ -92,7 +92,7 @@ async def sync_to_tracos(
         tracos_workorder = await tracos.capture_workorder(obj.number)
         if tracos_workorder is None:
             await tracos.insert_workorder(obj)
-        #if data on DB is older (came before) than inbound data, then update
+        # if data on DB is older (came before) than inbound data, then update
         elif tracos_workorder.updatedAt < obj.updatedAt:
             await tracos.update_workorder(obj)
 

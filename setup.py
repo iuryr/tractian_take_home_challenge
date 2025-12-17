@@ -133,23 +133,25 @@ def create_customer_system_workorder_on_file_system(
         with open(f"{DATA_INBOUND_DIR}/{workorder['orderNo']}.json", "w") as f:
             json.dump(workorder, f)
 
+
 def create_malformed_json_customer_workorder_on_filesystem():
     with open(f"{DATA_INBOUND_DIR}/malformed.json", "w") as f:
         f.write('{"field1": "value", "field2"}')
     return
 
+
 def create_schema_uncompliant_customer_workorder_on_filesystem():
     with open(f"{DATA_INBOUND_DIR}/schema_uncompliant.json", "w") as f:
-        json.dump({"isSchemacorrect": False},f)
+        json.dump({"isSchemacorrect": False}, f)
     return
+
 
 def create_no_read_permission_json_on_filesystem():
     path = f"{DATA_INBOUND_DIR}/no_permission.json"
     with open(path, "w") as f:
-        json.dump({"isSchemacorrect": False},f)
+        json.dump({"isSchemacorrect": False}, f)
 
     os.chmod(path, stat.S_IWUSR)
-
 
 
 async def main():
