@@ -62,6 +62,7 @@ distribution).
 - To clean: `make clean`
 
 5. **End to End testing (at project root)**
+
 `poetry run pytest -v` or `poetry run pytest -v -s` (if you want to see log
 messages)
 
