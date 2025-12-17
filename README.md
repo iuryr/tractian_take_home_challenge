@@ -50,8 +50,7 @@ distribution).
    ```
 2. **Preparing to run the project**
     ```bash
-    make all #this will build MongoDB container and run setup.py to generate
-    samples
+    make all # setup of MongoDB container + run setup.py to generate samples
     ```
 3. **Running the project**
     ```bash
@@ -61,7 +60,7 @@ distribution).
 - To rebuild: `make re`
 - To clean: `make clean`
 
-5. **Run tests**
+5. **Run tests (MongoDB container must be up and running)**
     ```bash
     make test
     ```
